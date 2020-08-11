@@ -1,0 +1,25 @@
+{
+  "name": "cs-quiz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xignotic84/cs-quiz.git"
+  },
+  "author": "Franz Herrmann",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xignotic84/cs-quiz/issues"
+  },
+  "homepage": "https://github.com/Xignotic84/cs-quiz#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.28",
+    "redis": "^3.0.2"
+  }
+}
