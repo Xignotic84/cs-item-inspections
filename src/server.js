@@ -9,6 +9,21 @@ const express = require('express')
 const app = express()
 const Routers = require('./routers')
 
+// Handle express sessions
+const session = require('express-session')
+const redis = require('redis')
+const redisClient = redis.createClient({db: 0})
+const RedisStore = require('connect-redis')(session)
+
+app.use(session({
+  secret: process.env.COOKIE_SECRET || '11AACC',
+  store: new RedisStore({client: redisClient}),
+  resave: false,
+  saveUninitialized: true,
+  cookie: {expires: 604800000}
+}))
+
+
 // Listen to port specified in env file
 app.listen(process.env.PORT, async () => {
   await _db.connect()
