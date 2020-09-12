@@ -1,4 +1,6 @@
 module.exports = {
   user: require('./user'),
-  quiz: require('./quiz')
+  group: require('./group'),
+  quiz: require('./quiz'),
+  submission: require('./submission')
 }
