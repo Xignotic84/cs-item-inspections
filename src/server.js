@@ -9,11 +9,16 @@ const express = require('express')
 const app = express()
 const Routers = require('./routers')
 
-// Handle express sessions
+// Handle express sessions using redis
 const session = require('express-session')
 const redis = require('redis')
 const redisClient = redis.createClient({db: 0})
 const RedisStore = require('connect-redis')(session)
+
+const bodyParser = require('body-parser')
+// Use body parser
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
 
 app.use(session({
   secret: process.env.COOKIE_SECRET || '11AACC',
