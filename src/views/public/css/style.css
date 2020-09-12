@@ -4,5 +4,8 @@
 }
 
 html, body {
-    background: darkgrey;
+    background: #2c303a;
+    color: white;
+    font-family: 'Lato', serif;
 }
+
