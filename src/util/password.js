@@ -16,18 +16,4 @@ module.exports = {
     return bcrypt.compareSync(plainPassword, password)
   },
 
-  async checkUser(id, plainPassword) {
-    if (!id) throw new Error('Missing args on checkUser function')
-    // Get from cache or database
-    const user = await functions.findOne(1, {id: id}, {
-      enabled: true,
-      key: `user:${id}`
-    })
-
-    if (!user) return false
-
-    // Use compare function to check if password is valid. Returns Boolean
-
-    return await this.compare(plainPassword, user.password)
-  }
 }
