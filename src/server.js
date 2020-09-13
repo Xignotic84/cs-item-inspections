@@ -15,6 +15,12 @@ const redis = require('redis')
 const redisClient = redis.createClient({db: 0})
 const RedisStore = require('connect-redis')(session)
 
+app.set('trust proxy', 1)
+
+// Use Helmet NPM module xss
+const helmet = require("helmet");
+app.use(helmet())
+
 const bodyParser = require('body-parser')
 // Use body parser
 app.use(bodyParser.urlencoded({extended: true}))
