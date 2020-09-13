@@ -13,17 +13,17 @@
 
         <form action="/auth/signup" method="post">
             <label>
-                <input type="text" id="email" name="email" autocomplete="true" placeholder="Email">
+                <input type="email" id="email" name="email" autocomplete="true" placeholder="Email" required>
             </label>
             <label>
-                <input type="text" id="username" name="username" autocomplete="true" placeholder="Username">
+                <input type="text" id="username" name="username" autocomplete="true" placeholder="Username" required maxlength="24" minlength="3">
             </label>
             <label>
                 Are you a teacher?
                 <input type="checkbox" id="is_teacher" name="is_teacher" autocomplete="false">
             </label>
             <label>
-                <input type="password" id="password" name="password" autocomplete="false" placeholder="Password">
+                <input type="password" id="password" name="password" autocomplete="false" placeholder="Password" required minlength="4" maxlength="60">
             </label>
             <input type="submit" value="Submit" onsubmit="preventDefault()">
         </form>

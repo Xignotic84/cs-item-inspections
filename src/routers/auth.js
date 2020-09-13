@@ -1,8 +1,14 @@
 const express = require('express')
 const Router = express.Router()
-const password = require('./../util/password')
+const Password = require('./../util/password')
 const functions = require('./../interface/functions')
 const uniqueString = require('unique-string');
+
+// Function taken from stackoverflow to validate emails
+function validateEmail(email) {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
 
 // Listen to endpoints on this route
 Router.get('/login', (req, res, next) => {
@@ -36,7 +42,6 @@ Router.post('/login', async (req, res, next) => {
   const body = req.body
   const password = body.password
   const username = body.username
-  console.log(username, password)
 
   if (!(password && username)) {
     return res.status(400).render('pages/login.ejs', {
@@ -47,19 +52,19 @@ Router.post('/login', async (req, res, next) => {
 
   const foundUser = await functions.getUser(req.body.username)
 
-  if (foundUser) {
-    req.session.user = {
-      data: foundUser,
-      loggedInAt: new Date(),
-      unix_loggedInAt: Date.now()
-    }
+  if (!foundUser) return res.status(401).render('pages/login.ejs', {pagetitle: 'Login', message: 'Invalid login'})
 
-    res.status(200).redirect('/')
+  if (!await Password.compare(password, foundUser.password)) return res.status(401).render('pages/login.ejs', {pagetitle: 'Login', message: 'Invalid password'})
 
-    next()
-  } else {
-    res.status(401).render('pages/login.ejs', {pagetitle: 'Login', message: 'Invalid login'})
+  req.session.user = {
+    data: foundUser,
+    loggedInAt: new Date(),
+    unix_loggedInAt: Date.now()
   }
+
+  res.status(200).redirect('/')
+
+  next()
 })
 
 Router.post('/signup', async (req, res, next) => {
@@ -74,24 +79,29 @@ Router.post('/signup', async (req, res, next) => {
 
   if (!username) return res.status(400).render('pages/signup.ejs', {pagetitle: 'Signup', message: 'You need to provide an email'})
 
+  if (!username.match(/^[a-z0-9-.]+$/gi)) return res.status(400).render('pages/signup.ejs', {pagetitle: 'Signup', message: 'Only letters (az), numbers (0-9) and decimal points (.) are accepted.'})
+
   if (!password) return res.status(400).render('pages/signup.ejs', {pagetitle: 'Signup', message: 'You need to provide an password'})
+
+  if (!validateEmail(email)) return res.status(400).render('pages/signup.ejs', {pagetitle: 'Signup', message: 'You need to provide a valid email'})
 
   const foundUser = await functions.getUser(req.body.username)
 
   if (foundUser) return res.status(400).render('pages/signup.ejs', {pagetitle: 'Signup', message: 'An account with this username already exists'})
 
   delete body.is_teacher
+  delete body.password
+
+  password = await Password.hash(password)
 
   const user = await functions.create(1, {
     id: uniqueString(),
     is_teacher,
+    password,
     ...body,
     timestamp: new Date(),
     unix_timestamp: Date.now()
   })
-
-  console.log(body)
-
 
   req.session.user = {
     data: user,
