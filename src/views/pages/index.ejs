@@ -19,7 +19,6 @@
                 <h1></h1>
             </div>
         </a>
-        <% console.log(user) %>
        <div>
            <% if (user) { %>
                <a href="/auth/logout"> Sign out </a>
@@ -29,7 +28,7 @@
 
            <% } %>
        </div>
-        <%= user.data && user.data.username %>
+        <%= user && user.username %>
     </div>
 </div>
 

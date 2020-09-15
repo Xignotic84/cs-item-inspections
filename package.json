@@ -27,6 +27,7 @@
     "helmet": "^4.1.1",
     "mongoose": "^5.9.28",
     "redis": "^3.0.2",
+    "shortid": "^2.2.15",
     "unique-string": "^2.0.0"
   },
   "devDependencies": {

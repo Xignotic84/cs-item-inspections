@@ -9,7 +9,7 @@ const collections = {
 }
 
 module.exports = {
-  async findOne(collection, id, cache = {key: false, bypass: false, timeout: process.env.REDIS_CACHE_TIME, set: true}) {
+  async findOne(collection, id, cache = {set: true, key: false, bypass: false, timeout: process.env.REDIS_CACHE_TIME}) {
     let data
 
     const foundColl = models[collections[collection]] || models[collection]
@@ -23,7 +23,7 @@ module.exports = {
       // Stringify the data to cache
       data = JSON.stringify(data)
 
-      redis.set(cache.key, data, 'EX', cache.timeout)
+      redis.set(cache.key.replace('-ID', data.id), data, 'EX', cache.timeout)
     }
 
     // Parse from cache (String to JSON)
@@ -53,13 +53,25 @@ module.exports = {
     return data || false
   },
 
-  async create (collection, data) {
+  async create(collection, data) {
     const foundColl = models[collections[collection]] || models[collection]
 
     if (!data) throw new Error(`No data was provided on create function`)
 
     const _data = new foundColl(data)
     _data.save()
+
+    return _data
+  },
+
+  async update(collection, id, data, cache_id) {
+    const foundColl = models[collections[collection]] || models[collection]
+
+    if (!data) throw new Error(`No data was provided on update function`)
+
+    const _data = await foundColl.updateOne(id, data)
+
+    if (cache_id) cache.del(cache_id)
 
     return _data
   },
