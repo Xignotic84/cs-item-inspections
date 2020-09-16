@@ -1,8 +1,7 @@
 const express = require('express')
 const Router = express.Router()
 const uniqueString = require('unique-string');
-const shortid = require('shortid')
-shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$@');
+const nanoid = require('nanoid')
 
 
 Router.get('/create', (req, res) => {
@@ -26,7 +25,7 @@ Router.post('/create', async (req, res) => {
   await req.db.create(2, {
     id: id,
     owner_id: req.session.user.id,
-    code: shortid.generate(),
+    code: nanoid.nanoid(6).toLowerCase(),
     name: name,
     description: description,
     created_at: new Date(),
