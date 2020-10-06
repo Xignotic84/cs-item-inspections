@@ -1,7 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <%- include('../partials/header.ejs') %>
+
+<script src="/js/builder.js"></script>
 
 <body>
 
@@ -11,15 +14,17 @@
             <h2> <%=message || ''%></h2>
         </div>
 
-        <form action="/auth/login" method="post">
-            <label>
-                <input type="text" id="username" name="username" autocomplete="true" placeholder="Username" required>
-            </label>
-            <label>
-                <input type="password" id="password" name="password" autocomplete="true" placeholder="Password" required>
-            </label>
-            <input type="submit" value="Signup" onsubmit="preventDefault()">
-        </form>
+        <div class="">
+            <form name="form" class="box" action="/auth/login" method="post">
+                <label for="username">Username:
+                    <input type="text" id="username" name="username" setting="username" required>
+                </label>
+
+                <label for="username">Password:
+                    <input type="password" id="password" name="password" setting="password" required>
+                </label>
+            </form>
+        </div>
     </div>
 </div>
 </body>

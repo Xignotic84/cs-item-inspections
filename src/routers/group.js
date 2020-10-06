@@ -14,85 +14,180 @@ Router.get('/create', (req, res) => {
 })
 
 Router.post('/create', async (req, res) => {
-  if (!(req.session.user && req.session.user.id)) return res.status(401).redirect('/auth/login')
+  const user = req.session.user
+  if (!(user && user.id)) return res.status(401).redirect('/auth/login')
 
   const body = req.body
 
   const {name, description} = body
 
+  // Generate group id
   const id = uniqueString()
 
-  await req.db.create(2, {
+  // Create group
+  await req.db.create(3, {
     id: id,
-    owner_id: req.session.user.id,
+    owner_id: user.id,
     code: nanoid.nanoid(6).toLowerCase(),
     name: name,
     description: description,
-    created_at: new Date(),
     unix_created_at: Date.now()
   })
 
-  const newGroups = [ ...req.session.user.groups, {id: id, joined_at: new Date(), unix_joined_at: Date.now(), owner: true}]
-
-  await req.db.update(1, {id: req.session.user.id}, {
-    groups: newGroups
+  // Create member in DB to link group with user
+  const newGroup = await req.db.create(2, {
+    user_id: user.id,
+    group_id: id,
+    permissions: 1,
+    unix_joined_at: Date.now()
   })
 
-  req.session.user.groups = newGroups
+  // Set user groups in session
+  user.groups = [...user.groups || [], newGroup._doc]
 
   res.status(200).redirect(`/group/${id}`)
 })
+
+Router.post('/:id/delete', async (req, res) => {
+  const user = req.session.user
+  if (!(user && user.id)) return res.status(401).redirect('/auth/login')
+  const id = req.params.id
+
+  const userGroup = user.groups.filter(g => g.group_id === id)[0]
+
+  if (!userGroup) {
+    return res.status(401).json({message: "You're not authorized to delete this group",})
+  }
+
+  const foundGroup = await req.db.findOne(3, {id: id})
+
+  if (!foundGroup) {
+    return res.status(404).json({message: "I couldn't find that group"})
+  }
+
+  if (foundGroup.permissions !== 1) {
+    return res.status(401).json({message: "You're not authorized to delete this group"})
+  }
+
+  // Delete group from db and cache
+  await req.db.delete(3, {id: id}, `group:${id}`)
+
+  // Delete member
+  await req.db.deleteMany(2, {group_id: id})
+
+  // Remove group from user session
+  user.groups = user.groups.filter(g => g.group_id !== foundGroup.id)
+
+  res.status(200).redirect('/groups')
+
+})
+
+Router.post('/:id/leave', async (req, res) => {
+  const user = req.session.user
+  if (!user) return res.status(401).redirect('/auth/login')
+
+  const foundGroup = user.groups.filter(g => g.group_id === req.params.id)[0]
+
+  if (!foundGroup) {
+    return res.status(404).json({message: "Couldn't find that group"})
+  }
+
+  if (foundGroup.permissions === 1) {
+    return res.status(500).json({message: "You cannot leave this group because you own it",})
+  }
+
+  await req.db.delete(2, {group_id: foundGroup.id})
+
+  // Remove group from user session
+  user.groups = user.groups.filter(g => g.group_id !== foundGroup.id)
+
+  res.status(200).redirect('/')
+})
+
+
+Router.get(['/join/:code', '/join'], async (req, res) => {
+  const user = req.session.user
+  if (!user) return res.status(401).redirect('/auth/login')
+
+  const code = req.params.code || req.body.code
+
+  // Check if code exists and is either passed through body or param
+  if (!code) return res.status(400).redirect('/me')
+
+  // Get data from db or cache then set it into cache
+  const foundGroup = await req.db.findOne(3, {code: code}, {key: `group:-ID`})
+
+  if (!foundGroup) {
+    return res.status(404).render('pages/error.ejs', {
+      pagetitle: `Error`,
+      error: {
+        code: 404,
+        message: "Couldn't find a group with that code",
+      },
+      user: req.session.user || false
+    })
+  }
+
+  const userGroup = user.groups?.filter(g => g.group_id === foundGroup.id)
+
+  if (userGroup && userGroup[0]) {
+    return res.status(200).redirect(`/group/${foundGroup.id}`)
+  }
+
+
+  // Create member for group
+  const newGroup = await req.db.create(2, {
+    user_id: req.session.user.id,
+    group_id: foundGroup.id,
+    permissions: 3,
+    unix_joined_at: Date.now()
+  })
+
+  // Add member to user groups
+  user.groups = [...user.groups || [], newGroup._doc]
+
+  res.status(200).redirect(`/group/${foundGroup.id}`)
+})
+
 
 // Listen to endpoints on this route
 Router.get('/:id', async (req, res) => {
   const id = req.params.id
 
   // Get data from db or cache then set it into cache
-  const foundGroup = await req.db.findOne(2, {id: id}, {key: `group:${id}`})
+  const foundGroup = await req.db.findOne(3, {id: id}, {key: `group:${id}`})
 
-  if (!foundGroup) return res.status(404).render('pages/error.ejs', {
-    pagetitle: `Error`,
-    error: {
-      code: 404,
-      message: "I couldn't find that group",
-    },
-    user: req.session.user || false
-  })
+  if (!foundGroup) {
+    return res.status(404).render('pages/error.ejs', {
+      pagetitle: `Error`,
+      error: {
+        code: 404,
+        message: "I couldn't find that group",
+      },
+      user: req.session.user || false
+    })
+  }
+
+  const user = req.session.user
+
+  // Check if user is in group
+  if (!user.groups.filter(g => g.group_id === foundGroup.id)[0]) {
+    return res.status(401).render('pages/error.ejs', {
+      pagetitle: `Error`,
+      error: {
+        code: 401,
+        message: "You are not authorized to view this page",
+      },
+      user: user || false
+    })
+  }
 
   res.status(200).render('pages/group.ejs', {
     pagetitle: foundGroup.name,
     group: foundGroup,
-    user: req.session.user || false
+    user: user || false
   })
 
-})
-
-Router.post('/join/:code', async (req, res) => {
-  if (!req.session.user) return res.status(401).redirect('/auth/login')
-
-  const code = req.params.code
-
-  // Get data from db or cache then set it into cache
-  const foundGroup = req.db.findOne(2, {code: code}, {key: `group:-ID`})
-
-  if (!foundGroup) return res.status(404).render('pages/error.ejs', {
-    pagetitle: `Error`,
-    error: {
-      code: 404,
-      message: "Couldn't find a group with th  at code",
-    },
-    user: req.session.user || false
-  })
-
-  const newGroups = [ ...req.session.user.groups, {id: foundGroup.id, joined_at: new Date(), unix_joined_at: Date.now(), owner: false}]
-
-  await req.db.update(1, {id: req.session.user.id}, {
-    groups: newGroups
-  })
-
-  req.session.user.groups = newGroups
-
-  res.status(200).redirect(`/${foundGroup.id}`)
 })
 
 module.exports = Router

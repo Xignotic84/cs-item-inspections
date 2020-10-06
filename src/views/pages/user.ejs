@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/header.ejs') %>
+
+<body>
+
+<div class="main content">
+
+    <div class="groups">
+        <%=renderGroups()%>
+    </div>
+    <div class="join">
+
+        <form action="/join/" method="post">
+            <label>
+                <input type="text" id="description" name="description" autocomplete="false" placeholder="Short description" required maxlength="300" minlength="5">
+            </label>
+            <input type="submit" value="Delete" onsubmit="preventDefault()">
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
+<%
+function renderGroups() {
+    for (let i = 0; i < groups.length; i++) {
+        const group = groups[i];
+    %>
+        <div class="group">
+            <h1 class="name"><%=group.name%></h1>
+            <p class="description"><%=group.description%></p>
+        </div>
+    <%}
+}%>

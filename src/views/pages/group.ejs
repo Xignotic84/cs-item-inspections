@@ -9,6 +9,14 @@
     <div class="group">
         <h1> <%= group.name %></h1>
         <p> <%= group.description %></p>
+
+        <form action="/group/<%=group.id%>/delete" method="post">
+            <input type="submit" value="Delete" onsubmit="preventDefault()">
+        </form>
+
+        <form action="/group/<%=group.id%>/leave" method="post">
+            <input type="submit" value="Leave" onsubmit="preventDefault()">
+        </form>
     </div>
 </div>
 </body>
