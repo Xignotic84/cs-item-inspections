@@ -2,81 +2,109 @@ const models = require('./models')
 const redis = require('./redis')
 
 const collections = {
-  1: 'user',
-  2: 'group',
-  3: 'quiz',
-  4: 'submission'
+    1: 'user',
+    2: 'member',
+    3: 'group',
+    4: 'quiz',
+    5: 'submission'
 }
 
+
 module.exports = {
-  async findOne(collection, id, cache = {set: true, key: false, bypass: false, timeout: process.env.REDIS_CACHE_TIME}) {
-    let data
+    async handleCache(cache, data) {
+        if (typeof data !== 'string' && cache.set && cache.key) {
+            // Stringify the data to cache
+            data = JSON.stringify(data)
 
-    const foundColl = models[collections[collection]] || models[collection]
+            redis.set(cache.key.replace('-ID', data.id), data, 'EX', cache.timeout)
+        }
+        return true
+    },
 
-    if (!foundColl) throw new Error('Invalid collection passed with function findOne()')
+    async findOne(collection, id, cache = {
+        set: true,
+        key: false,
+        bypass: false,
+        timeout: process.env.REDIS_CACHE_TIME
+    }) {
+        let data
 
-    data = cache.key && !cache.bypass && await redis.get(cache.key) || await foundColl.findOne(id)
+        const foundColl = models[collections[collection]] || models[collection]
 
-    // Check if data hasn't been cached, this will only be on the initial fetch from the database and then set it into cache
-    if (typeof data !== 'string' && cache.set && cache.key) {
-      // Stringify the data to cache
-      data = JSON.stringify(data)
+        if (!foundColl) throw new Error('Invalid collection passed with function findOne()')
 
-      redis.set(cache.key.replace('-ID', data.id), data, 'EX', cache.timeout)
+        data = cache.key && !cache.bypass && await redis.get(cache.key) || await foundColl.findOne(id)
+
+        // Check if data hasn't been cached, this will only be on the initial fetch from the database and then set it into cache
+        await this.handleCache(cache, data)
+
+        // Parse from cache (String to JSON)
+        if (typeof data === 'string') data = JSON.parse(data)
+
+        return data || false
+    },
+
+    async find(collection, id, cache = {key: false, bypass: false, timeout: process.env.REDIS_CACHE_TIME, set: true}) {
+        let data
+
+        const foundColl = models[collections[collection]] || models[collection]
+
+        data = cache.key && !cache.bypass && await redis.get(cache.key) || await foundColl.find(id)
+
+        // Check if data hasn't been cached, this will only be on the initial fetch from the database and then set it into cache
+        await this.handleCache(cache, data)
+
+        // Parse from cache (String to JSON)
+        if (typeof data === 'string') data = JSON.parse(data)
+
+        return data || false
+    },
+
+    async create(collection, data) {
+        const foundColl = models[collections[collection]] || models[collection]
+
+        if (!data) throw new Error(`No data was provided on create function`)
+
+        const _data = new foundColl(data)
+        _data.save()
+
+        return _data
+    },
+
+    async update(collection, id, data, cache_id) {
+        const foundColl = models[collections[collection]] || models[collection]
+
+        if (!data) throw new Error(`No data was provided on update function`)
+
+        const _data = await foundColl.updateOne(id, data)
+
+        if (cache_id) redis.del(cache_id)
+
+        return _data
+    },
+
+    async delete(collection, id, cache_id) {
+        const foundColl = models[collections[collection]] || models[collection]
+
+        const del = await foundColl.findOneAndDelete(id)
+
+        if (cache_id) redis.del(cache_id)
+
+        return del
+    },
+
+    async deleteMany(collection, id, cache_id) {
+        const foundColl = models[collections[collection]] || models[collection]
+
+        const del = await foundColl.deleteMany(id)
+
+        if (cache_id) redis.del(cache_id)
+
+        return del
+
+    },
+
+    async getUser(username, email) {
+        return this.findOne(1, {$or: [{'username': username}, {'email': email}]});
     }
-
-    // Parse from cache (String to JSON)
-    if (typeof data === 'string') data = JSON.parse(data)
-
-    return data || false
-  },
-
-  async find(collection, id, cache = {key: false, bypass: false, timeout: process.env.REDIS_CACHE_TIME, set: true}) {
-    let data
-
-    const foundColl = models[collections[collection]] || models[collection]
-
-    data = cache.key && !cache.bypass && await redis.get(cache.key) || await foundColl.find(id)
-
-    // Check if data hasn't been cached, this will only be on the initial fetch from the database and then set it into cache
-    if (typeof data !== 'string' && cache.set && cache.key) {
-      // Stringify the data to cache
-      data = JSON.stringify(data)
-
-      redis.set(cache.key.replace('-ID', data.id), data, 'EX', cache.timeout)
-    }
-
-    // Parse from cache (String to JSON)
-    if (typeof data === 'string') data = JSON.parse(data)
-
-    return data || false
-  },
-
-  async create(collection, data) {
-    const foundColl = models[collections[collection]] || models[collection]
-
-    if (!data) throw new Error(`No data was provided on create function`)
-
-    const _data = new foundColl(data)
-    _data.save()
-
-    return _data
-  },
-
-  async update(collection, id, data, cache_id) {
-    const foundColl = models[collections[collection]] || models[collection]
-
-    if (!data) throw new Error(`No data was provided on update function`)
-
-    const _data = await foundColl.updateOne(id, data)
-
-    if (cache_id) cache.del(cache_id)
-
-    return _data
-  },
-
-  async getUser(username) {
-    return this.findOne(1, {$or: [{'username': username}, {'email': username}]});
-  }
 }

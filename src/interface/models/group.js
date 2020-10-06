@@ -8,7 +8,6 @@ const groupSchema = new Schema({
   code: {type: String, required: true, unique: true},
   name: defType,
   description: defType,
-  created_at: Date,
   unix_created_at: Number,
 })
 

@@ -6,8 +6,6 @@ const submissionSchema = new Schema({
   id: defType,
   quiz_id: defType,
   user_id: defType,
-  answers: Array,
-  created_at: Date,
   unix_created_at: Number,
 })
 
