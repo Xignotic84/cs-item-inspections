@@ -3,19 +3,25 @@
 
 <%- include('../partials/header.ejs') %>
 
+
 <body>
 
 <div class="main content">
 
-    <form action="/group/create" method="post">
-        <label>
-            <input type="text" id="name" name="name" autocomplete="false" placeholder="Name" required maxlength="15">
-        </label>
-        <label>
-            <input type="text" id="description" name="description" autocomplete="false" placeholder="Short description" required maxlength="300" minlength="5">
-        </label>
-        <input type="submit" value="Signup" onsubmit="preventDefault()">
-    </form>
+    <div class="">
+        <form name="form" class="box" method="post">
+            <label for="name">Name:
+                <input type="text" id="name" name="name" setting="name">
+            </label>
+
+            <label for="description">Description:
+                <input type="text" id="description" name="description" setting="description">
+            </label>
+            <div class="button" id="btn">
+                Click me
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

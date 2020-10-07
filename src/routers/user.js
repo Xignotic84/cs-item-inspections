@@ -10,9 +10,7 @@ Router.get(['/:id', '/me'], async (req, res, next) => {
     if (!user && req.path === '/me') {
         return res.status(200).redirect('/auth/login')
     }
-    const foundGroups = await req.db.find(3, {id: user.groups.map(g => g.group_id)})
-
-    console.log(foundGroups)
+    const foundGroups = await req.db.find(3, {id: user.groups?.map(g => g.group_id)}, {key: `groups:${user.id}`})
 
     // Check if path is /me and if so use sesion user or get from db
     const foundUser = (req.path === '/me' || id === user.id) ? user : await req.db.findOne(1, {id: id}, {key: `user:${id}`})

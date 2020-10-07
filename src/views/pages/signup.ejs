@@ -2,34 +2,38 @@
 <html lang="en">
 
 <%- include('../partials/header.ejs') %>
-<script src="/js/builder.js"></script>
 
 <body>
 
 <div class="main content">
-    <div class="login">
-        <div class="login-message">
-            <h2> <%=message || ''%></h2>
-        </div>
 
-        <div class="">
-            <form name="form" class="box" action="/auth/signup" method="post">
-                <label for="email">Email:
-                    <input type="email" id="email" name="email" autocomplete="true" setting="email">
-                </label>
-                <label for="username">Username:
-                    <input type="text" id="username" name="username" setting="username">
-                </label>
+    <div class="signup-container">
+        <div class="login">
+            <h1>Sign up</h1>
+            <label for="email">
+                <input type="email" id="email" name="email" autocomplete="true" setting="email" placeholder="Email">
+            </label>
+            <label for="username">
+                <input type="text" id="username" name="username" setting="username" placeholder="Username">
+            </label>
+            <label for="password">
+                <input type="password" id="password" name="password" setting="password" placeholder="Password">
+            </label>
 
-                <label>
-                    Are you a teacher?
+            <div class="switch-container">
+               <h4>
+                   Are you a teacher?
+               </h4>
+                <label class="switch">
                     <input type="checkbox" id="is_teacher" name="is_teacher" autocomplete="false" setting="is_teacher">
+                    <span class="slider"></span>
                 </label>
+            </div>
 
-                <label for="username">Password:
-                    <input type="password" id="password" name="password" setting="password">
-                </label>
-            </form>
+            <div class="button" id="btn">
+                Submit
+            </div>
+            <p>Already have an account? <span><a href="/auth/login">Login</a></span></p>
         </div>
     </div>
 </div>

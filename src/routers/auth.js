@@ -14,7 +14,7 @@ Router.get('/login', (req, res) => {
     const user = req.session.user
 
     // Check if the user session already exists and redirects if true
-    if (user && user.data) return res.status(200).redirect('/')
+    if (user && user.password) return res.status(200).redirect('/')
 
     // Render page with data
     res.render('pages/login.ejs', {pagetitle: 'Login', user: false, message: false})
@@ -40,7 +40,6 @@ Router.post('/login', async (req, res) => {
     const body = req.body
     const password = body.password
     const username = body.username
-    console.log(req.body)
 
     if (!(password && username)) {
         return res.status(400).json({message: 'You need to provide a password'})
@@ -52,7 +51,7 @@ Router.post('/login', async (req, res) => {
     if (!foundUser) return res.status(401).json({message: 'Invalid login'})
 
     // Compare passwords with the hashed password from the database and the plain password provided with the post request, this uses bcrypt
-    if (!await Password.compare(password, foundUser.password)) return res.status(401).json({message: 'Invalid password'})
+    if (!await Password.compare(password, foundUser.password)) return res.status(401).json({message: 'Invalid login'})
 
 
     const groups = await req.db.find(2, {user_id: foundUser.id})
@@ -64,18 +63,17 @@ Router.post('/login', async (req, res) => {
         unix_loggedInAt: Date.now()
     }, foundUser._doc)
 
-    res.header('location', '/').status(200).json({message: 'Success'})
+    res.header('location', '/').status(200).json({message: `Successfully logged in as ${foundUser.username}`})
 })
 
 Router.post('/signup', async (req, res) => {
     const body = req.body
     if (!body) return res.status(400).json({code: 400, message: 'No body provided'}).redirect('/')
-    console.log(body)
+
     let {email, username, password, is_teacher} = body
 
     // Check if teacher checkbox is set to true
     is_teacher = is_teacher === 'on';
-
 
     if (!email) return res.status(400).json({message: 'You need to provide an email'})
 
@@ -87,7 +85,7 @@ Router.post('/signup', async (req, res) => {
     // Make sure that the username only includes non special characters
     if (!username.match(/^[a-z0-9-.]+$/gi)) return res.status(400).json({message: 'Only letters (az), numbers (0-9) and decimal points (.) are accepted.'})
 
-    if (!password) return res.status(400).json({message: 'You need to provide an password'})
+    if (!password) return res.status(400).json({message: 'You need to provide a password'})
 
     // Request to database to see if the user exists
     const foundUser = await req.db.getUser(username, email)

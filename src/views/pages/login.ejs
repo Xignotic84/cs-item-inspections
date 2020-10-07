@@ -4,28 +4,25 @@
 
 <%- include('../partials/header.ejs') %>
 
-<script src="/js/builder.js"></script>
-
 <body>
 
 <div class="main content">
-    <div class="login">
-        <div class="login-message">
-            <h2> <%=message || ''%></h2>
-        </div>
-
-        <div class="">
-            <form name="form" class="box" action="/auth/login" method="post">
-                <label for="username">Username:
-                    <input type="text" id="username" name="username" setting="username" required>
+        <div class="login-container">
+            <div class="login">
+                <h1>Sign in</h1>
+                <label for="username">
+                    <input type="text" id="username" name="username" setting="username" placeholder="Username">
                 </label>
 
-                <label for="username">Password:
-                    <input type="password" id="password" name="password" setting="password" required>
+                <label for="password">
+                    <input type="password" id="password" name="password" setting="password" placeholder="Password">
                 </label>
-            </form>
+                <div class="button" id="btn">
+                    Submit
+                </div>
+                <p>Don't have an account? <span><a href="/auth/signup">Sign Up</a></span></p>
+            </div>
         </div>
-    </div>
 </div>
 </body>
 </html>

@@ -21,6 +21,10 @@ Router.post('/create', async (req, res) => {
 
   const {name, description} = body
 
+  if (!name) return res.status(400).json({message: 'You need to provide a name'})
+
+  if (!description) return res.status(400).json({message: 'You need to provide a description for your group'})
+
   // Generate group id
   const id = uniqueString()
 
@@ -45,7 +49,7 @@ Router.post('/create', async (req, res) => {
   // Set user groups in session
   user.groups = [...user.groups || [], newGroup._doc]
 
-  res.status(200).redirect(`/group/${id}`)
+  res.header('location', `/group/${id}`).status(200).json({message: `Successfully created ${name}`})
 })
 
 Router.post('/:id/delete', async (req, res) => {
@@ -65,7 +69,7 @@ Router.post('/:id/delete', async (req, res) => {
     return res.status(404).json({message: "I couldn't find that group"})
   }
 
-  if (foundGroup.permissions !== 1) {
+  if (userGroup.permissions !== 1) {
     return res.status(401).json({message: "You're not authorized to delete this group"})
   }
 
@@ -78,8 +82,7 @@ Router.post('/:id/delete', async (req, res) => {
   // Remove group from user session
   user.groups = user.groups.filter(g => g.group_id !== foundGroup.id)
 
-  res.status(200).redirect('/groups')
-
+  res.header('location', `/user/me`).status(200).json({message: `Successfully deleted ${foundGroup.name}`})
 })
 
 Router.post('/:id/leave', async (req, res) => {
@@ -101,7 +104,8 @@ Router.post('/:id/leave', async (req, res) => {
   // Remove group from user session
   user.groups = user.groups.filter(g => g.group_id !== foundGroup.id)
 
-  res.status(200).redirect('/')
+  res.header('location', `/user/me`).status(200).json({message: 'Successfully left your group'})
+
 })
 
 

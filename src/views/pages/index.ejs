@@ -3,29 +3,18 @@
 
 <%- include('../partials/header.ejs') %>
 
+
 <body>
 <h1> Hello world</h1>
 <div class="page header">
     <div>
         <h1> Welcome to Quiz </h1>
-        <a>
-            <div class="header button">
-                <h1></h1>
-            </div>
-        </a>
-
-        <a>
-            <div class="header button colored">
-                <h1></h1>
-            </div>
-        </a>
        <div>
            <% if (user) { %>
                <a href="/auth/logout"> Sign out </a>
            <% } else { %>
                <a href="/auth/login"> Sign in </a>
                <a href="/auth/signup"> Sign up </a>
-
            <% } %>
        </div>
         <%= user && user.username %>
@@ -33,10 +22,11 @@
 </div>
 
 <div class="main content">
-    <div>
+    <div class="row quizzes">
         <h1> Quizzes </h1>
+        <%renderQuizzes()%>
     </div>
-    <div class="">
+    <div class="row groups">
         <div>
 
         </div>
@@ -44,3 +34,26 @@
 </div>
 </body>
 </html>
+
+<%
+ function renderQuizzes() {
+    for (let i = 0; i < quizzes.length; i++) {
+        const quiz = quizzes[i]
+        if (!quiz) return %>
+            <div class="item quiz">
+                <div class="name">
+                    <h3> <%=quiz.name%> </h3>
+                </div>
+                <div class="quiz-footer">
+
+                </div>
+            </div>
+
+    <%}
+ }
+
+ function renderGroups() {
+
+ }
+
+ %>

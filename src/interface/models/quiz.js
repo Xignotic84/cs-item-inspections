@@ -5,6 +5,7 @@ const defType = {type: String, required: true, unique: true}
 const quizSchema = new Schema({
   id: defType,
   name: String,
+  description: String,
   group_id: String,
   is_public: Boolean,
   unix_created_at: Number,

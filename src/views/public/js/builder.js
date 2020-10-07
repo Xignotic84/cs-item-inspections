@@ -105,41 +105,42 @@ function insert(obj) {
     }
 }
 
-function notify(res) {
+function notify(res, type) {
+    if (document.getElementsByClassName('notification display')[0]) return
     const elem = document.getElementById('notification')
     if (!elem) return
 
-    elem.className = `notification display`
+    elem.className = `notification display ${type}`
 
     elem.style.display = 'block'
 
-    elem.innerHTML = res.message
+    elem.innerHTML = res
 
     setTimeout(() => {
         elem.className = `notification hide`
     }, 3000)
 }
 
-function post() {
+function post(location) {
     const xhr = new XMLHttpRequest()
-    xhr.open('POST', window.location.href)
+    xhr.open('POST', location ? `${window.location.href}${location}` : window.location.href)
     xhr.onload = function () {
         const location = xhr.getResponseHeader('location')
+        const response = JSON.parse(xhr.response)
         if (xhr.status === 200 && location) {
+            localStorage.setItem('message', response.message)
             return window.location = location
         }
-        const response = JSON.parse(xhr.response)
-        if (response.error) return alert('Error: ' + response.error)
+        if (response.error) return notify('Error: ' + response.error)
         insert(response)
-        notify(response)
+        notify(response.message, 'error')
     }
     xhr.setRequestHeader('Content-Type', 'application/json')
     xhr.send(JSON.stringify(create()))
 }
 
 document.onkeydown = function (e) {
-    if (document.getElementsByClassName('notification display')[0]) return
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && document.querySelectorAll('[loc]').length < 2 && document.querySelectorAll('[setting]').length > 0) {
         e.preventDefault()
         post()
     }
