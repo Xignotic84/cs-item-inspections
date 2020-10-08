@@ -7,7 +7,7 @@ const quizSchema = new Schema({
   name: String,
   description: String,
   group_id: String,
-  is_public: Boolean,
+  is_public: {type: Boolean, default: true},
   unix_created_at: Number,
 })
 
