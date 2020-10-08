@@ -5,21 +5,23 @@
 
 
 <body>
-<h1> Hello world</h1>
-<div class="page header">
-    <div>
-        <h1> Welcome to Quiz </h1>
-       <div>
-           <% if (user) { %>
-               <a href="/auth/logout"> Sign out </a>
-           <% } else { %>
-               <a href="/auth/login"> Sign in </a>
-               <a href="/auth/signup"> Sign up </a>
-           <% } %>
-       </div>
-        <%= user && user.username %>
+<div class="page-header-container">
+    <div class="page-header">
+        <div>
+            <h1> Welcome to Quiz </h1>
+            <div>
+                <% if (user) { %>
+                    <a href="/auth/logout"> Sign out </a>
+                <% } else { %>
+                    <a href="/auth/login"> Sign in </a>
+                    <a href="/auth/signup"> Sign up </a>
+                <% } %>
+            </div>
+            <%= user && user.username %>
+        </div>
     </div>
 </div>
+
 
 <div class="main content">
     <div class="row quizzes">
@@ -27,9 +29,8 @@
         <%renderQuizzes()%>
     </div>
     <div class="row groups">
-        <div>
-
-        </div>
+        <h1> Groups </h1>
+        <%renderGroups()%>
     </div>
 </div>
 </body>
@@ -40,20 +41,34 @@
     for (let i = 0; i < quizzes.length; i++) {
         const quiz = quizzes[i]
         if (!quiz) return %>
-            <div class="item quiz">
-                <div class="name">
-                    <h3> <%=quiz.name%> </h3>
-                </div>
-                <div class="quiz-footer">
+            <a href="/quiz/<%=quiz.id%>">
+                <div class="item quiz">
+                    <div class="name">
+                        <h3> <%=quiz.name%> </h3>
+                    </div>
+                    <div class="quiz-footer">
 
+                    </div>
                 </div>
-            </div>
-
+            </a>
     <%}
  }
 
  function renderGroups() {
-
- }
-
- %>
+    for (let i = 0; i < groups.length; i++) {
+        const group = groups[i]
+        if (!group) return %>
+        <a href="/group/<%=group.id%>">
+            <div class="item group">
+                <div class="item-name">
+                    <h3> <%=group.name%> </h3>
+                </div>
+                <div class="item-description">
+                    <p> <%=group.description%></p>
+                </div>
+                <div class="group-footer">
+                </div>
+            </div>
+        </a>
+ <%}
+ } %>
