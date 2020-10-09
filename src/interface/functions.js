@@ -38,7 +38,7 @@ module.exports = {
 
         if (!foundColl) throw new Error('Invalid collection passed with function findOne()')
 
-        data = cache.key && !cache.bypass && await redis.get(cache.key) || await foundColl.findOne(id)
+        data = cache.key && !cache.bypass && await redis.get(cache.key.replace('-ID', data.id)) || await foundColl.findOne(id)
 
         // Check if data hasn't been cached, this will only be on the initial fetch from the database and then set it into cache
         await this.handleCache(cache, data)
@@ -54,7 +54,7 @@ module.exports = {
 
         const foundColl = models[collections[collection]] || models[collection]
 
-        data = cache.key && !cache.bypass && await redis.get(cache.key) || await foundColl.find(id)
+        data = cache.key && !cache.bypass && await redis.get(cache.key.replace('-ID', data.id)) || await foundColl.find(id)
 
         // Check if data hasn't been cached, this will only be on the initial fetch from the database and then set it into cache
         await this.handleCache(cache, data)
