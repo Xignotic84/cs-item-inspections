@@ -12,11 +12,16 @@ const collections = {
 
 module.exports = {
     async handleCache(cache, data) {
-        if (typeof data !== 'string' && cache.set && cache.key) {
+        if (!(data && cache.key)) return false
+
+        const cached = await cache.get(cache.key)
+        if (cached) return false
+
+        if (typeof data !== 'string' && cache.set) {
             // Stringify the data to cache
             data = JSON.stringify(data)
 
-            redis.set(cache.key.replace('-ID', data.id), data, 'EX', cache.timeout)
+            redis.set(cache.key.replace('-ID', data.id), data, 'EX', cache.timeout || process.env.REDIS_CACHE_TIME)
         }
         return true
     },

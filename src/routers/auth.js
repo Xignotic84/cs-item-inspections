@@ -38,8 +38,7 @@ Router.get(['/logout', '/signout'], (req, res) => {
 
 Router.post('/login', async (req, res) => {
     const body = req.body
-    const password = body.password
-    const username = body.username
+    const {password, username} = body
 
     if (!(password && username)) {
         return res.status(400).json({message: 'You need to provide a password'})
@@ -113,7 +112,7 @@ Router.post('/signup', async (req, res) => {
     // Set session for this user
     req.session.user = Object.assign({loggedInAt: new Date(), unix_loggedInAt: Date.now()}, db._doc)
 
-    res.header('location', '/').status(200).json({message: 'Success'})
+    res.header('location', '/').status(200).json({message: `Successfully logged in as ${username}`})
 })
 
 module.exports = Router

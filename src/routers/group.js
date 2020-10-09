@@ -23,7 +23,11 @@ Router.post('/create', async (req, res) => {
 
   if (!name) return res.status(400).json({message: 'You need to provide a name'})
 
+  if (name.length > 50) return res.status(400).json({message: 'Your name cannot be greater than 50 characters'})
+
   if (!description) return res.status(400).json({message: 'You need to provide a description for your group'})
+
+  if (description.length > 100) return res.status(400).json({message: 'Your description cannot be greater than 100 characters'})
 
   // Generate group id
   const id = uniqueString()
