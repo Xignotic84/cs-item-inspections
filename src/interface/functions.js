@@ -14,7 +14,7 @@ module.exports = {
     async handleCache(cache, data) {
         if (!(data && cache.key)) return false
 
-        const cached = await cache.get(cache.key)
+        const cached = await redis.get(cache.key)
         if (cached) return false
 
         if (typeof data !== 'string' && cache.set) {
@@ -110,6 +110,6 @@ module.exports = {
     },
 
     async getUser(username, email) {
-        return this.findOne(1, {$or: [{'username': username}, {'email': email}]});
+        return this.findOne(1, {$or: [{'username': username}, {'email': email}]}, {key: `user:-ID`});
     }
 }
