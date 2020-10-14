@@ -12,8 +12,7 @@ const collections = {
 
 module.exports = {
     async handleCache(cache, data) {
-        if (!data || data && !data[0] || typeof data === "string" || !cache.key) return false
-
+        if (!data || !cache.key || typeof data === 'string') return false
         const cached = await redis.get(cache.key)
         if (cached) return false
 
@@ -93,7 +92,7 @@ module.exports = {
 
         const del = await foundColl.findOneAndDelete(id)
 
-        if (cache_id) redis.del(cache_id)
+        if (cache_id) await redis.del(cache_id)
 
         return del
     },
@@ -103,7 +102,7 @@ module.exports = {
 
         const del = await foundColl.deleteMany(id)
 
-        if (cache_id) redis.del(cache_id)
+        if (cache_id) await redis.del(cache_id)
 
         return del
 
