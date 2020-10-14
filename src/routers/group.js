@@ -40,7 +40,7 @@ Router.post('/create', async (req, res) => {
     name: name,
     description: description,
     unix_created_at: Date.now()
-  })
+  }, {key: 'group:-ID'})
 
   // Create member in DB to link group with user
   const newGroup = await req.db.create(2, {
