@@ -12,7 +12,7 @@ const collections = {
 
 module.exports = {
     async handleCache(cache, data) {
-        if (!(data || data[0]) || typeof data === "string" || !cache.key) return false
+        if (!data || data && !data[0] || typeof data === "string" || !cache.key) return false
 
         const cached = await redis.get(cache.key)
         if (cached) return false
