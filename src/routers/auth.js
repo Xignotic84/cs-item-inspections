@@ -46,7 +46,6 @@ Router.post('/login', async (req, res) => {
 
     // Get user from db
     const foundUser = await req.db.getUser(req.body.username)
-
     if (!foundUser) return res.status(401).json({message: 'Invalid login'})
 
     // Compare passwords with the hashed password from the database and the plain password provided with the post request, this uses bcrypt
@@ -59,7 +58,7 @@ Router.post('/login', async (req, res) => {
         groups: groups || [],
         loggedInAt: new Date(),
         unix_loggedInAt: Date.now()
-    }, foundUser._doc)
+    }, foundUser)
 
     res.header('location', '/').status(200).json({message: `Successfully logged in as ${foundUser.username}`})
 })

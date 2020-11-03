@@ -19,7 +19,7 @@ Router.post('/create', async (req, res) => {
 
   const body = req.body
 
-  const {name, description} = body
+  const {name, description, is_public} = body
 
   if (!name) return res.status(400).json({message: 'You need to provide a name'})
 
@@ -38,6 +38,7 @@ Router.post('/create', async (req, res) => {
     owner_id: user.id,
     code: nanoid.nanoid(6).toLowerCase(),
     name: name,
+    is_public: is_public,
     description: description,
     unix_created_at: Date.now()
   }, {key: 'group:-ID'})
