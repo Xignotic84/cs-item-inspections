@@ -52,7 +52,6 @@ Router.post('/login', async (req, res) => {
     // Compare passwords with the hashed password from the database and the plain password provided with the post request, this uses bcrypt
     if (!await Password.compare(password, foundUser.password)) return res.status(401).json({message: 'Invalid login'})
 
-
     const groups = await req.db.find(2, {user_id: foundUser.id})
 
     // Set user session
