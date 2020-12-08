@@ -3,17 +3,16 @@ const redis = require('./redis')
 
 const collections = {
     1: 'user',
-    2: 'member',
-    3: 'group',
-    4: 'quiz',
-    5: 'submission'
+    2: 'item',
+    3: 'inspection',
+    4: 'characteristic'
 }
-
 
 module.exports = {
     async handleCache(cache, data) {
         if (!data || !cache.key || typeof data === 'string') return false
         const cached = await redis.get(cache.key)
+        console.log(cached, cache.key)
         if (cached) return false
 
         if (typeof data !== 'string' && cache.key) {

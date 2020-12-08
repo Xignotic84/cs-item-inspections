@@ -6,31 +6,78 @@
 <body>
 
 <div class="main content">
+    <div class="profile">
+        <div class="avatar">
+            <img alt onerror="this.src='/images/defaultavatar.png'" src="<%=user.avatar%>">
+        </div>
+        <div class="content">
+            <div class="name">
+                <%=user.username%>
+            </div>
+            <div>
 
-    <div class="groups">
-        <%=renderGroups()%>
+            </div>
+        </div>
     </div>
-    <div class="join">
 
-        <form action="/join/" method="post">
-            <label>
-                <input type="text" id="description" name="description" autocomplete="false" placeholder="Short description" required maxlength="300" minlength="5">
-            </label>
-            <input type="submit" value="Delete" onsubmit="preventDefault()">
-        </form>
+    <div class="row">
+        <%=renderGroups()%>
+        <a class="join-group" onclick="joinGroup()">
+            <div class="item quiz">
+                <h1 class="name">Join a group</h1>
+                <div class="plus-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="join-group-popup-parent" id="joingroupparent">
+        <div class="join-group-popup" id="joingroup">
+            <form action="/join/" method="post">
+                <h1> hi</h1>
+                <input type="submit" value="Delete" onsubmit="preventDefault()">
+            </form>
+        </div>
     </div>
 </div>
 </body>
 </html>
+
+<script>
+    const elem = document.getElementById('joingroup')
+
+    document.onclick = function(e) {
+        if (e.target.id === 'joingroupparent') {
+            elem.style.display === 'none'
+        }
+    }
+
+    function joinGroup() {
+        if (!elem) return
+        elem.style.display = 'block'
+
+    }
+</script>
 
 <%
 function renderGroups() {
     for (let i = 0; i < groups.length; i++) {
         const group = groups[i];
     %>
-        <div class="group">
-            <h1 class="name"><%=group.name%></h1>
-            <p class="description"><%=group.description%></p>
-        </div>
+        <a href="/group/<%=group.id%>">
+            <div class="item quiz">
+                <h1 class="name"><%=group.name%></h1>
+                <p class="description"><%=group.description%></p>
+                <div class="options">
+                    <div class="language">
+                        <i class="fas fa-flag"> <%=group.language || "German"%></i>
+                    </div>
+
+                    <div class="location">
+                        <i class="fas fa-location-arrow"> <%=group.location || "United Kingdom"%></i>
+                    </div>
+                </div>
+            </div>
+        </a>
     <%}
 }%>

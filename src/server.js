@@ -20,7 +20,7 @@ app.set('trust proxy', 1)
 
 // Use Helmet NPM module to prevent xss
 const helmet = require("helmet");
-app.use(helmet())
+app.use(helmet.xssFilter());
 
 const bodyParser = require('body-parser')
 // Use body parser
@@ -45,7 +45,6 @@ app.listen(process.env.PORT, async () => {
 
 app.use((req, res, next) => {
   req.db = _functions
-
   next()
 })
 
@@ -53,8 +52,14 @@ app.use((req, res, next) => {
 app.use(express.static(`${process.cwd().replace(/[\\]/, '/')}/views/public/`))
 
 // Listen to routes
-app.use('/', Routers.main)
 app.use(['/auth', '/authorize'], Routers.auth)
-app.use('/group', Routers.group)
+app.use((req, res, next) => {
+  if (!req.session.user) return res.status(403).redirect('/auth/login')
+
+  next()
+})
+
+app.use('/', Routers.main)
 app.use('/user', Routers.user)
-app.use('/quiz', Routers.quiz)
+app.use('/item', Routers.item)
+

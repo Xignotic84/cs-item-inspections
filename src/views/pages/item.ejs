@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/header.ejs') %>
+
+
+<body>
+<div class="page-header-container">
+    <div class="page-header">
+        <h1> <%=item.name%> </h1>
+        <p> Last inspected </p>
+        <p> <%=lastInspected %></p>
+    </div>
+</div>
+
+<div class="item-buttons">
+    <button class="button" onclick="toggleInspection()"> Inspect </button>
+
+</div>
+
+<div class="main content">
+    <ul class="accordian-list">
+        <%renderInspections()%>
+    </ul>
+</div>
+</body>
+</html>
+
+
+<div class="form-container" id="inspection-form">
+    <div class="form">
+        <span class="cross" onclick="toggleInspection()">X</span>
+        <h1>Item Inspection</h1>
+        <div class="textBoxes">
+            <label for="note">
+                <textarea class="textBox" type="text" id="note" setting="note" placeholder="Note"></textarea>
+            </label>
+
+            <label for="characteristic">
+                <textarea class="textBox" type="text" id="characteristic" setting="characteristic" placeholder="Characteristics"></textarea>
+            </label>
+        </div>
+
+        <div class="button" id="btn" loc="/inspect">
+            Submit
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleInspection() {
+        const elem = document.getElementById('inspection-form')
+        if (elem?.style.display === 'block') elem.style.display = 'none'
+        else elem.style.display = 'block'
+    }
+
+</script>
+
+
+<%
+function renderInspections() {
+for (let i = 0; i < inspections.length; i++) {
+    const foundItem = inspections[i]
+    if (!foundItem) return %>
+<li class="accordian-item">
+    <input type="checkbox" class="accordian-checkbox" checked>
+    <h2 class="accordian-title">  <%= new Date(foundItem.unix_created_at)%></h2>
+    <p class="inspector"> Inspected by: <%=foundItem.inspector%> </p>
+    <div class="content">
+        <p class="accordian-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ac magna non augue porttitor scelerisque ac id diam.</p>
+    </div>
+</li>
+<%}
+}%>

@@ -3,16 +3,15 @@ const Router = express.Router()
 
 // Listen to endpoints on this route
 Router.get('/', async (req, res, next) => {
+  // Check if user is signed in, if not send to login page
 
-  const quizzes = await req.db.find(4, {is_public: true})
-  const groups = await req.db.find(3, {is_public: true})
+  const items = await req.db.find(2, {})
 
   // Render page with data
   res.render('pages/index.ejs', {
     pagetitle: 'Home',
+    items: items || [],
     user: req.session.user || false,
-    quizzes: quizzes || [],
-    groups: groups || []
   })
 
   next()
