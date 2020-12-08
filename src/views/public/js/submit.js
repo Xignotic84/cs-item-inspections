@@ -1,6 +1,6 @@
 window.onload = function () {
 
-    Array.from(document.getElementsByClassName('button'))?.forEach(btn => {
+    Array.from(document.getElementsByTagName('button'))?.forEach(btn => {
         btn.addEventListener('click', function () {
             console.log(true)
             post(this.getAttribute('loc'))

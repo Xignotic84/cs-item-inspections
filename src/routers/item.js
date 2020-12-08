@@ -71,6 +71,14 @@ Router.get('/:id', async (req, res) => {
     })
 })
 
+Router.post('/:id/delete', async (req, res) => {
+    const id = req.params.id
+
+    await req.db.delete(2, {id: id})
+
+    res.header('location', '/').status(200).json({message: `Deleted item`})
+})
+
 Router.post('/:id/inspect', async (req, res) => {
     const id = req.params.id
 
@@ -87,7 +95,6 @@ Router.post('/:id/inspect', async (req, res) => {
 
     if (characteristic.length > 300) return res.status(400).json({message: 'You cannot provide a characteristic longer than 300 characters'})
 
-
     req.db.create(3, {
         id: uniqueString(),
         inspector: req.session.user.username,
@@ -99,8 +106,16 @@ Router.post('/:id/inspect', async (req, res) => {
 
     req.db.update(2, {id: id}, {lastInspected: Date.now()})
 
-    res.header('location', '/').status(200).json({message: `Inspected ${item.name}`})
+    res.header('location', `/item/${id}`).status(200).json({message: `Inspected ${item.name}`})
 })
 
+
+Router.post('/:_id/inspect/:id/delete', async (req, res) => {
+    const {id, _id} = req.params
+
+    await req.db.delete(3, {id: id})
+
+    res.header('location', `/item/${_id}`).status(200).json({message: `Deleted inspection`})
+})
 
 module.exports = Router

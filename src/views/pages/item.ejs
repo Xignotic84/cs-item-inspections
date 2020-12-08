@@ -14,7 +14,7 @@
 </div>
 
 <div class="item-buttons">
-    <button class="button" onclick="toggleInspection()"> Inspect </button>
+    <div class="button" onclick="toggleInspection()"> Inspect </div>
     <button class="button" id="delete" loc="/delete"> Delete </button>
 </div>
 
@@ -41,13 +41,14 @@
             </label>
         </div>
 
-        <div class="button" id="btn" loc="/inspect">
+        <button class="button" id="btn" loc="/inspect">
             Submit
-        </div>
+        </button>
     </div>
 </div>
 
 <script>
+
     function toggleInspection() {
         const elem = document.getElementById('inspection-form')
         if (elem?.style.display === 'block') elem.style.display = 'none'
