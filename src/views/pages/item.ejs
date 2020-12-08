@@ -15,7 +15,7 @@
 
 <div class="item-buttons">
     <button class="button" onclick="toggleInspection()"> Inspect </button>
-
+    <button class="button" id="delete" loc="/delete"> Delete </button>
 </div>
 
 <div class="main content">
@@ -64,10 +64,25 @@ for (let i = 0; i < inspections.length; i++) {
     if (!foundItem) return %>
 <li class="accordian-item">
     <input type="checkbox" class="accordian-checkbox" checked>
-    <h2 class="accordian-title">  <%= new Date(foundItem.unix_created_at)%></h2>
+    <h2 class="accordian-title">  <%= foundItem.inspected %></h2>
     <p class="inspector"> Inspected by: <%=foundItem.inspector%> </p>
     <div class="content">
-        <p class="accordian-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ac magna non augue porttitor scelerisque ac id diam.</p>
+        <div class="content-item">
+            <p>Notes</p>
+            <label for="note">
+                <textarea readonly class="textBox" type="text" id="note" setting="note" placeholder="<%=foundItem.note%>"></textarea>
+            </label>
+        </div>
+
+        <div class="content-item">
+            <p>Characteristics</p>
+            <label for="characteristic">
+                <textarea readonly class="textBox" type="text" id="characteristic" setting="characteristic" placeholder="<%=foundItem.characteristic%>"></textarea>
+            </label>
+        </div>
+        <div class="content-buttons">
+            <button class="button" id="delete" loc="/inspect/<%=foundItem.id%>/delete"> <i class="fas fa-trash"></i> </button>
+        </div>
     </div>
 </li>
 <%}

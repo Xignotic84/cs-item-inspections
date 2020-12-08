@@ -3,6 +3,14 @@ const Router = express.Router()
 const uniqueString = require('unique-string');
 const mtz = require('moment-timezone')
 
+mtz().calendar(null, {
+    sameDay: '[Today]',
+    nextDay: '[Tomorrow]',
+    nextWeek: 'dddd',
+    lastDay: '[Yesterday]',
+    lastWeek: '[Last] dddd',
+    sameElse: 'DD/MM/YYYY'
+});
 
 // Listen to endpoints on this route
 Router.get('/create', async (req, res, next) => {
@@ -38,7 +46,10 @@ Router.get('/:id', async (req, res) => {
     // Get item and inspections from db
     const item = await req.db.findOne(2, {id: id})
     const inspections = await req.db.find(3, {item_id: id})
-    console.log(item)
+
+    inspections.forEach(d => {
+        d.inspected = mtz(d.unix_created_at).tz("Asia/Hong_Kong").calendar()
+    })
 
     // Check if item is in db
     if (!item) return res.status(404).render('pages/error.ejs', {
@@ -51,9 +62,9 @@ Router.get('/:id', async (req, res) => {
 
     // Render page
     res.status(200).render('pages/item.ejs', {
-        pagetitle: `Item, | ${item.name}`,
+        pagetitle: `Item | ${item.name}`,
         item: item,
-        lastInspected: mtz(item.lastInspected).tz("Asia/Hong_Kong").format("HH:mm (YYYY/MM/DD)"),
+        lastInspected: mtz(item.lastInspected).tz("Asia/Hong_Kong").calendar(),
         inspections: inspections.sort((a, b) => b.unix_created_at - a.unix_created_at),
         user: req.session.user || false,
     })
@@ -62,13 +73,19 @@ Router.get('/:id', async (req, res) => {
 Router.post('/:id/inspect', async (req, res) => {
     const id = req.params.id
 
-    console.log(req.body)
     // Check if item exists
     const item = await req.db.findOne(2, {id: id})
 
     if (!item) res.status(404).json({message: 'No item was found with this ID'})
 
     const {note, characteristic} = req.body
+
+    if (!note && !characteristic) return res.status(400).json({message: 'You need to provide a note or charasteristic'})
+
+    if (note.length > 300) return res.status(400).json({message: 'You cannot provide a note longer than 300 characters'})
+
+    if (characteristic.length > 300) return res.status(400).json({message: 'You cannot provide a characteristic longer than 300 characters'})
+
 
     req.db.create(3, {
         id: uniqueString(),

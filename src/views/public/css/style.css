@@ -10,6 +10,7 @@
     --bg-black: #2c303a;
     --light-gray: #46546b;
     --dark-green: rgb(61, 180, 242);
+    --lighter-bg: rgba(0, 0, 0, 0.2);
     --default-font: Roboto, sans-serif;
 }
 
@@ -215,7 +216,7 @@ a {
     border: 0;
 }
 
-.login input:focus, .login .button:focus, .form input:focus, .form select:focus {
+.login input:focus, .button:focus, .form input:focus, .form select:focus {
     outline: none;
 }
 
@@ -231,7 +232,8 @@ a {
     padding: 10px;
     font-size: 20px;
     border-radius: 3px;
-    width: 310px;
+    width: 60%;
+    max-width: 310px;
     margin: 20px auto;
     display: block;
     cursor: pointer;
@@ -446,7 +448,7 @@ input:checked + .slider:before {
 #inspection-form {
     display: none;
     background: var(--bg-black);
-    z-index: 2;
+    z-index: 3;
 }
 
 .cross {
@@ -467,6 +469,7 @@ input:checked + .slider:before {
 .textBox {
     resize: none;
     border-radius: 2px;
+    border: 1px solid var(--light-gray);
     font-family: var(--default-font);
     color: white;
     overflow: auto;
@@ -474,8 +477,7 @@ input:checked + .slider:before {
     min-width: 250px;
     margin-top: 10px;
     margin-bottom: 10px;
-    border: 0;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--lighter-bg);
     padding: 20px 20px 35px 20px;
     outline: none;
     transition: border 350ms ease-out;
@@ -484,6 +486,19 @@ input:checked + .slider:before {
 .item-buttons {
     margin: 0 auto;
     text-align: center;
+    display: inline-block;
+    width: 100%;
+}
+.item-buttons button {
+    display: inline-block;
+}
+
+.button:hover {
+    background: var(--ligher-bg)
+}
+
+#delete:hover {
+    background: var(--light-red)
 }
 
 .accordian-list {
@@ -496,7 +511,7 @@ input:checked + .slider:before {
 
 .accordian-item {
     margin: 0 40px;
-    padding: 20px 0 5px;
+    padding: 20px 0 10px;
     position: relative;
 }
 
@@ -505,9 +520,9 @@ input:checked + .slider:before {
 }
 
 .accordian-title:after {
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--light-blue);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid var(--light-blue);
     bottom: 0;
     content: "";
     display: inline-block;
@@ -560,4 +575,32 @@ input:checked + .slider:before {
 
 .inspector {
     opacity: 0.5;
+}
+
+.content {
+    margin-top: 10px;
+}
+
+.content-item {
+    width: 40%;
+    display: inline-block;
+}
+
+.content-item textarea {
+    z-index: 2;
+    cursor: default;
+    border: 1px solid var(--light-gray)
+}
+
+.content-buttons {
+    z-index: 2;
+    position: absolute;
+    right: 20px;
+    bottom: 5px;
+    width: 10%;
+}
+
+.content-buttons button {
+    z-index: 2;
+    font-size: 18px;
 }
