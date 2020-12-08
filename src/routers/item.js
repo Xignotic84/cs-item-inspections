@@ -46,9 +46,10 @@ Router.get('/:id', async (req, res) => {
     // Get item and inspections from db
     const item = await req.db.findOne(2, {id: id})
     const inspections = await req.db.find(3, {item_id: id})
+    const guessedTz = mtz.tz.guess()
 
     inspections.forEach(d => {
-        d.inspected = mtz(d.unix_created_at).tz("Asia/Hong_Kong").calendar()
+        d.inspected = mtz(d.unix_created_at).tz(guessedTz).calendar()
     })
 
     // Check if item is in db
@@ -64,7 +65,7 @@ Router.get('/:id', async (req, res) => {
     res.status(200).render('pages/item.ejs', {
         pagetitle: `Item | ${item.name}`,
         item: item,
-        lastInspected: mtz(item.lastInspected).tz("Asia/Hong_Kong").calendar(),
+        lastInspected: mtz(item.lastInspected).tz(guessedTz).calendar(),
         inspections: inspections.sort((a, b) => b.unix_created_at - a.unix_created_at),
         user: req.session.user || false,
     })

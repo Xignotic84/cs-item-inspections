@@ -18,6 +18,8 @@ html, body {
     background: var(--bg-black);
     color: white;
     font-family: var(--default-font);
+    width: 100%;
+    height: 100%;
 }
 
 a {
