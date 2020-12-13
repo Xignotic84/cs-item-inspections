@@ -199,8 +199,8 @@ a {
 
 .login input, .form input {
     display: block;
-    width: 60%;
-    margin: 20px auto;
+    width: 290px;
+    margin: 10px auto;
     border-radius: 3px;
     padding: 15px;
     background: rgba(0, 0, 0, 0.2);
@@ -210,7 +210,7 @@ a {
 
 .form select {
     display: block;
-    width: 65%;
+    width: 320px;
     margin: 20px auto;
     border-radius: 3px;
     padding: 15px;
@@ -429,9 +429,18 @@ a {
     background: var(--light-red)
 }
 
+.item-description {
+    list-style: none;
+    margin: 40px auto;
+    background: rgba(0, 0, 0, 0.2);
+    max-width: 880px;
+    padding: 15px;
+    border-radius: 2px;
+    word-break: break-word;
+}
+
 .accordian-list {
     list-style: none;
-    padding: 0;
     margin: 40px auto;
     background: rgba(0, 0, 0, 0.2);
     max-width: 880px;
@@ -532,3 +541,66 @@ a {
     z-index: 2;
     font-size: 18px;
 }
+
+.form-values {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.form-values textarea {
+    width: 290px;
+    padding: 15px;
+    height: 50px;
+    margin: 10px auto;
+    border: 0;
+}
+
+.characteristics {
+    height: 100%;
+}
+.characteristic, .atag, #tags:default  {
+    margin-right: 5px;
+    margin-left: 5px;
+    display: inline-block;
+    text-align: center;
+    font-size: 13px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--lighter-bg);
+    margin-top: 2px;
+    font-weight: 600;
+    flex: 1;
+    padding: 8px 10px;
+    white-space: nowrap;
+}
+
+.control {
+    text-align: center;
+    width: 330px;
+    margin: 0 auto;
+}
+
+.suggestedtags {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 0 auto;
+    width: 330px;
+    position: absolute;
+    background: var(--lighter-bg);
+    border-radius: 3px;
+    box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
+    z-index: 10;
+    transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    -webkit-transition: opacity .25s ease-in-out;
+}
+
+.suggestedtags p {
+    background: var(--bg-black);
+    z-index: 100;
+    cursor: pointer;
+    margin-bottom: 0 !important;
+    padding: 8px;
+    transition: .1s ease-in-out all;
+}
+

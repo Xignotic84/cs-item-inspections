@@ -13,12 +13,16 @@
     </div>
 </div>
 
+
 <div class="item-buttons">
     <div class="button" onclick="toggleInspection()"> Inspect </div>
     <button class="button" id="delete" loc="/delete"> Delete </button>
 </div>
 
 <div class="main content">
+    <div class="item-description">
+        <%=item.description%>
+    </div>
     <ul class="accordian-list">
         <%renderInspections()%>
     </ul>
@@ -35,12 +39,17 @@
             <label for="note">
                 <textarea class="textBox" type="text" id="note" setting="note" placeholder="Note"></textarea>
             </label>
+            <div class="control">
+                <input class="dashboard__input override extra-short-input" id="taginput" autocomplete="off" placeholder="Characteristics">
+                <div class="" id="taglist"></div>
+                <input setting="characteristic" type="hidden" name="tags" id="tags" value="" data-default-tags="<%=characteristics%>">
+                <div class="holder">
+                    <div class="dashboard__suggested-tags suggestedtags" id="suggestedtags">
+                    </div>
+                </div>
+            </div>
 
-            <label for="characteristic">
-                <textarea class="textBox" type="text" id="characteristic" setting="characteristic" placeholder="Characteristics"></textarea>
-            </label>
         </div>
-
         <button class="button" id="btn" loc="/inspect">
             Submit
         </button>
@@ -77,9 +86,16 @@ for (let i = 0; i < inspections.length; i++) {
 
         <div class="content-item">
             <p>Characteristics</p>
-            <label for="characteristic">
-                <textarea readonly class="textBox" type="text" id="characteristic" setting="characteristic" placeholder="<%=foundItem.characteristic%>"></textarea>
-            </label>
+            <div class="characteristics">
+                <%foundItem.characteristic.split(',').forEach(d => {%>
+                <div class="characteristic">
+                    <%=d%>
+                </div>
+                <%
+                }) %>
+
+            </div>
+
         </div>
         <div class="content-buttons">
             <button class="button" id="delete" loc="/inspect/<%=foundItem.id%>/delete"> <i class="fas fa-trash"></i> </button>
@@ -88,3 +104,120 @@ for (let i = 0; i < inspections.length; i++) {
 </li>
 <%}
 }%>
+
+<script>
+    let taginput = document.getElementById('taginput');
+    let taglist = document.getElementById('taglist');
+    let tagFlag = document.querySelector('#tagflag');
+    let tags = document.getElementById('tags');
+    let suggestedtags = document.getElementById('suggestedtags');
+    let validTags = document.querySelector('#tags')
+        .dataset
+        .defaultTags
+        .split(',');
+
+    taginput.addEventListener('keydown', function(e) {
+        if (e.keyCode == 188 || e.keyCode == 13) {
+            e.preventDefault();
+            createTag();
+        } else if (e.keyCode == 8 && taginput.value == '' && taglist.children.length > 1) {
+            e.preventDefault();
+            var tag = taglist.children[taglist.children.length - 2];
+            var tagname = tag.innerText.substr(0, tag.innerText.length - 1);
+            removeTag(e, tag);
+            taginput.value = tagname;
+            taginput.select();
+        }
+    });
+
+    taginput.addEventListener('keyup', function(e) {
+        filterSuggestions();
+    });
+
+    var timeout;
+
+    taginput.addEventListener('focus', function(e) {
+        suggestedtags.style.display = 'block';
+        clearTimeout(timeout);
+        setTimeout(function() {
+            suggestedtags.classList.add('open');
+        }, 25);
+
+        filterSuggestions();
+    });
+
+    taginput.addEventListener('focusout', function(e) {
+        suggestedtags.classList.remove('open');
+        timeout = setTimeout(function() {
+            suggestedtags.style.display = 'none';
+        }, 250);
+    });
+
+    taglist.addEventListener('click', function(e) {
+        taginput.focus();
+    });
+
+    function createTag(value) {
+        var tag = value ? value : taginput.value;
+        var isValid = validTags.some(function(t) {
+            return t.toLowerCase() == tag.toLowerCase();
+        });
+        var currentTags = buildInput()
+            .split(',');
+        var exists = currentTags.some(function(t) {
+            return t.toLowerCase() == tag.toLowerCase();
+        });
+        if (!tag || !isValid || exists) return;
+        var tagEl = document.createElement('a');
+        tagEl.innerHTML = tag + ' <i class="remove circle icon"></i>';
+        tagEl.classList.add('atag');
+        tagEl.onclick = removeTag;
+        taglist.insertBefore(tagEl, tagFlag);
+        taginput.value = '';
+        buildInput();
+    }
+
+    function filterSuggestions() {
+        var input = taginput.value;
+        var currentTags = buildInput()
+            .split(',');
+        var suggestions = validTags.filter(function(t) {
+            return t.toLowerCase()
+                .startsWith(input.toLowerCase()) && !currentTags.includes(t);
+        });
+        suggestions = suggestions.map(function(s) {
+            return '<p onclick="createTag(this.innerText)">' + s + '</p>';
+        })
+            .join('\n');
+        suggestedtags.innerHTML = suggestions;
+    }
+
+    function removeTag(ev, el) {
+        if (!el) el = this;
+        el.remove();
+        buildInput();
+    }
+
+    function buildInput() {
+        var data = taglist.querySelectorAll('a');
+        var input = [];
+        for (var tag of data) {
+            input.push(tag.innerText.trim());
+        }
+        input = input.join(',');
+        tags.value = input;
+        return input;
+    }
+
+    function buildTags() {
+        var data = tags.value;
+        data = data.split(',');
+        for (var tag of data) {
+            createTag(tag);
+        }
+    }
+
+
+    buildTags();
+
+</script>

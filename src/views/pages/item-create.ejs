@@ -10,28 +10,25 @@
     <div class="form-container">
         <div class="form">
             <h1>Item Creation</h1>
-            <label for="name">
-                <input type="text" id="name" setting="name" placeholder="Name">
-            </label>
-
-            <label for="description">
-                <input type="text" id="description" setting="description" placeholder="Description">
-            </label>
-
-            <label for="location">
-                <input type="text" id="location" setting="location" placeholder="Location">
-            </label>
-
-
-
-            <label for="frequency">
-                <select setting="frequency">
-                    <option value="0">Once</option>
-                    <option value="1">Every Week</option>
-                    <option value="2">Every Month</option>
-                    <option value="3">Every Year</option>
-                </select>
-            </label>
+            <div class="form-values">
+                <label for="name">
+                    <input type="text" id="name" setting="name" placeholder="Name">
+                </label>
+                <label for="description">
+                    <textarea class="textBox" type="text" id="description" setting="description" placeholder="Description"></textarea>
+                </label>
+                <label for="location">
+                    <input type="text" id="location" setting="location" placeholder="Location">
+                </label>
+                <label for="frequency">
+                    <select setting="frequency">
+                        <option value="0">Once</option>
+                        <option value="1">Every Week</option>
+                        <option value="2">Every Month</option>
+                        <option value="3">Every Year</option>
+                    </select>
+                </label>
+            </div>
             <button class="button" id="btn">
                 Submit
             </button>

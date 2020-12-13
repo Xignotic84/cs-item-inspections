@@ -23,8 +23,6 @@ Router.get('/create', async (req, res, next) => {
 })
 
 Router.post('/create', async (req, res, next) => {
-    console.log(req.body)
-
     const {name, location} = req.body
 
     if (!name) return res.status(400).json({message: 'You need to provide an item name'})
@@ -37,6 +35,7 @@ Router.post('/create', async (req, res, next) => {
         unix_created_at: Date.now()
     })
 
+    // Respond to request with location header and json body with message
     res.header('location', '/').status(200).json({message: `Successfully created item ${name}`})
 })
 
@@ -65,6 +64,7 @@ Router.get('/:id', async (req, res) => {
     res.status(200).render('pages/item.ejs', {
         pagetitle: `Item | ${item.name}`,
         item: item,
+        characteristics: ['Checked the buttons', 'Checked air quality', 'Conducted maintenance'],
         lastInspected: mtz(item.lastInspected).tz(guessedTz).calendar(),
         inspections: inspections.sort((a, b) => b.unix_created_at - a.unix_created_at),
         user: req.session.user || false,
@@ -74,8 +74,13 @@ Router.get('/:id', async (req, res) => {
 Router.post('/:id/delete', async (req, res) => {
     const id = req.params.id
 
+    // Delete item from db
     await req.db.delete(2, {id: id})
 
+    // Delete inspections from db
+    await req.db.deleteMany(3, {item_id: id})
+
+    // Respond to request with location header and json body with message
     res.header('location', '/').status(200).json({message: `Deleted item`})
 })
 
@@ -86,7 +91,7 @@ Router.post('/:id/inspect', async (req, res) => {
     const item = await req.db.findOne(2, {id: id})
 
     if (!item) res.status(404).json({message: 'No item was found with this ID'})
-
+    console.log(req.body)
     const {note, characteristic} = req.body
 
     if (!note && !characteristic) return res.status(400).json({message: 'You need to provide a note or charasteristic'})
@@ -95,6 +100,7 @@ Router.post('/:id/inspect', async (req, res) => {
 
     if (characteristic.length > 300) return res.status(400).json({message: 'You cannot provide a characteristic longer than 300 characters'})
 
+    // Create new inspection in db
     req.db.create(3, {
         id: uniqueString(),
         inspector: req.session.user.username,
@@ -106,6 +112,7 @@ Router.post('/:id/inspect', async (req, res) => {
 
     req.db.update(2, {id: id}, {lastInspected: Date.now()})
 
+    // Respond to request with location header and json body with message
     res.header('location', `/item/${id}`).status(200).json({message: `Inspected ${item.name}`})
 })
 
@@ -113,8 +120,11 @@ Router.post('/:id/inspect', async (req, res) => {
 Router.post('/:_id/inspect/:id/delete', async (req, res) => {
     const {id, _id} = req.params
 
+    // Delete item from db
     await req.db.delete(3, {id: id})
 
+
+    // Respond to request with location header and json body with message
     res.header('location', `/item/${_id}`).status(200).json({message: `Deleted inspection`})
 })
 
