@@ -54,7 +54,8 @@ Router.get('/:id', async (req, res) => {
     // Check if item is in db
     if (!item) return res.status(404).render('pages/error.ejs', {
         pagetitle: 'Error',
-        error: {code: 404, message: 'Not found'
+        error: {
+            code: 404, message: 'Not found'
         },
         user: req.session.user || false
     })

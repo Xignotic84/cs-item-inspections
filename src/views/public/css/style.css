@@ -604,3 +604,38 @@ a {
     transition: .1s ease-in-out all;
 }
 
+
+.error-container {
+    text-align: center;
+}
+
+.error-container.code h1 {
+    color: var(--light-red)
+}
+
+.switcher-menu {
+    margin: 0 auto;
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+}
+
+.switch-characteristics, .switch-users {
+    display: inline-block;
+    text-align: center;
+    width: 45%;
+    margin: 0 10px;
+    background: var(--light-gray);
+    border: 0;
+    color: #fff;
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+
+.switch-users:focus, switch-characteristics:focus {
+    outline: none;
+    background-color: var(--lighter-bg);
+}

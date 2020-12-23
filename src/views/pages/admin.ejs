@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/nav.ejs') %>
+
+<body>
+<div class="page-header-container">
+    <div class="page-header">
+        <h1> Admin dashboard </h1>
+    </div>
+</div>
+
+
+<div class="main content">
+    <div class="switcher-menu">
+        <button class="switch-users" exclude="true" onclick="toggleSwitch('users')">
+            Users
+        </button>
+        <button class="switch-characteristics" exclude="true" onclick="toggleSwitch('characteristics')">
+            Characteristics
+        </button>
+    </div>
+    <div class="row users" id="switch:users">
+        <%renderUsers()%>
+    </div>
+    <div class="row characteristics" id="switch:characteristics">
+        <%renderCharacteristics()%>
+    </div>
+
+</div>
+</body>
+</html>
+
+<script>
+    function toggleSwitch(type) {
+        this.className = `switch:${type}`
+        const elem = document.getElementById(`switch:${type}`)
+        const oppElem = document.getElementById(`switch:${type !== 'users' ? 'users' : 'characteristics'}`)
+        if (!elem) return
+        if (elem.style.display === "block") {
+            elem.style.display = 'none'
+            oppElem.style.display = 'block'
+        }
+        else  {
+            elem.style.display = 'block'
+            oppElem.style.display = 'none'
+        }
+
+    }
+</script>
+
+
+<%
+function renderUsers() {
+for (let i = 0; i < users.length; i++) {
+    const foundUser = users[i]
+    if (!foundUser) return %>
+<div class="item user">
+    <div class="name">
+        <h3> <%=user.username%> </h3>
+    </div>
+    <div class="select">
+        <label>
+            <select setting="permission">
+                    <%
+                        for (let i = 0; i < Object.values(permissions).length; i++) {
+                            const found = permissions[i]
+                            const key = Object.keys(permissions)[i]
+                    %>
+                            <option <%=foundUser.permissionLevel === Number(key) ? 'selected="selected"' : ''%> value="<%=key%>"><%=found%></option>
+                <%} %>
+            </select>
+            <button class="button" id="btn" loc="/permissions/<%=foundUser.id%>">
+                Update
+            </button>
+        </label>
+    </div>
+</div>
+<%}
+}%>
+
+
+<%
+function renderCharacteristics() {
+for (let i = 0; i < characteristics.length; i++) {
+    const foundCharacteristic = characteristics[i]
+    if (!foundCharacteristic) return %>
+<div class="item characteristics">
+    <div class="name">
+        <h3> <%=foundCharacteristic.name%> </h3>
+    </div>
+</div>
+<%}
+}%>

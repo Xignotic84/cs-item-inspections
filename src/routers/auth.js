@@ -42,6 +42,8 @@ Router.post('/login', async (req, res) => {
     // Compare passwords with the hashed password from the database and the plain password provided with the post request, this uses bcrypt
     if (!await Password.compare(password, foundUser.password)) return res.status(401).json({message: 'Invalid login'})
 
+    if (foundUser.permissionLevel === 0) return res.header('location', '/auth/login').status(401).json({message: `Your account is pending approval, please wait until it's approved and try again.`})
+
     // Set user session
     req.session.user = Object.assign({
         loggedInAt: new Date(),
@@ -86,14 +88,16 @@ Router.post('/signup', async (req, res) => {
     // Create user collection in database with body from post request
     const db = await req.db.create(1, {
         id: uniqueString(),
+        permissionLevel: 0,
+        password,
         ...body,
         unix_created_at: Date.now()
     })
 
     // Set session for this user
-    req.session.user = Object.assign({loggedInAt: new Date(), unix_loggedInAt: Date.now()}, db._doc)
+    // req.session.user = Object.assign({loggedInAt: new Date(), unix_loggedInAt: Date.now()}, db._doc)
 
-    res.header('location', '/').status(200).json({message: `Successfully logged in as ${username}`})
+    res.header('location', '/auth/login').status(200).json({message: `Your account is pending approval, please wait until it's approved and try again.`})
 })
 
 module.exports = Router

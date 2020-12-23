@@ -4,6 +4,7 @@ require('dotenv').config()
 // Require database and interface files
 const _db = require('./interface/database');
 const _functions = require('./interface/functions')
+const redisFunctions = require('./interface/redis')
 
 // Initiate express
 const express = require('express')
@@ -33,7 +34,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {expires: 604800000}
-})) 
+}))
 
 
 // Listen to port specified in env file
@@ -45,6 +46,7 @@ app.listen(process.env.PORT, async () => {
 
 app.use((req, res, next) => {
   req.db = _functions
+  req.redis = redisFunctions
   next()
 })
 
@@ -53,6 +55,7 @@ app.use(express.static(`${process.cwd().replace(/[\\]/, '/')}/views/public/`))
 
 // Listen to routes
 app.use(['/auth', '/authorize'], Routers.auth)
+
 app.use((req, res, next) => {
   if (!req.session.user) return res.status(403).redirect('/auth/login')
 
@@ -62,4 +65,5 @@ app.use((req, res, next) => {
 app.use('/', Routers.main)
 app.use('/user', Routers.user)
 app.use('/item', Routers.item)
+app.use('/admin', Routers.admin)
 

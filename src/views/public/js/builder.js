@@ -118,6 +118,7 @@ function notify(res, type) {
 
     setTimeout(() => {
         elem.className = `notification hide`
+        localStorage.setItem('message', '')
     }, 3000)
 }
 
@@ -127,13 +128,11 @@ function post(location) {
     xhr.onload = function () {
         const location = xhr.getResponseHeader('location')
         const response = JSON.parse(xhr.response)
-        if (xhr.status === 200 && location) {
-            localStorage.setItem('message', response.message)
-            return window.location = location
-        }
+        localStorage.setItem('message', response.message)
+        if (location) window.location = location
         if (response.error) return notify('Error: ' + response.error)
         insert(response)
-        notify(response.message, 'error')
+        notify(response.message, xhr.status === 200 ? 'success' : 'error')
     }
     xhr.setRequestHeader('Content-Type', 'application/json')
     xhr.send(JSON.stringify(create()))
