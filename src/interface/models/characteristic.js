@@ -6,6 +6,7 @@ const schema = new Schema({
   id: {unique: true, ...defType},
   name: String,
   description: String,
+  creator: String,
   unix_created_at: {type: Number, required: true},
 })
 

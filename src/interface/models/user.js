@@ -4,6 +4,7 @@ const defType = {type: String, required: true}
 
 const userSchema = new Schema({
   id: {unique: true, ...defType},
+  permissionLevel: {type: Number, default: 0}, // 0 Unverified, 1 Verified normal user, 2 Manager, 3 Administrator
   username: {type: String, required: true, unique: true},
   email: {type: String, required: true, unique: true},
   password: defType,
