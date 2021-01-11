@@ -31,6 +31,7 @@ Router.post('/create', async (req, res, next) => {
 
     req.db.create(2, {
         id: uniqueString(),
+        creator: req.session.user.username,
         ...req.body,
         unix_created_at: Date.now()
     })
@@ -90,9 +91,8 @@ Router.post('/:id/inspect', async (req, res) => {
 
     // Check if item exists
     const item = await req.db.findOne(2, {id: id})
-
     if (!item) res.status(404).json({message: 'No item was found with this ID'})
-    console.log(req.body)
+
     const {note, characteristic} = req.body
 
     if (!note && !characteristic) return res.status(400).json({message: 'You need to provide a note or charasteristic'})
@@ -104,7 +104,7 @@ Router.post('/:id/inspect', async (req, res) => {
     // Create new inspection in db
     req.db.create(3, {
         id: uniqueString(),
-        inspector: req.session.user.username,
+        creator: req.session.user.username,
         item_id: id,
         note: note || "None Provided",
         characteristic: characteristic || "None Provided",

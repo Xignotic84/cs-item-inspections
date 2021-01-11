@@ -80,11 +80,9 @@ module.exports = {
 
         if (!data) throw new Error(`No data was provided on update function`)
 
-        const _data = await foundColl.updateOne(id, data, {upsert: upsert})
-
         if (cache_id) redis.del(cache_id)
 
-        return _data
+        return await foundColl.updateOne(id, data, {upsert: upsert})
     },
 
     async delete(collection, id, cache_id) {

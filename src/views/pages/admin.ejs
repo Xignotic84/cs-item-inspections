@@ -14,10 +14,10 @@
 
 <div class="main content">
     <div class="switcher-menu">
-        <button class="switch-users" exclude="true" onclick="toggleSwitch('users')">
+        <button class="switch users" exclude="true" onclick="toggleSwitch('users')">
             Users
         </button>
-        <button class="switch-characteristics" exclude="true" onclick="toggleSwitch('characteristics')">
+        <button class="switch characteristics" exclude="true" onclick="toggleSwitch('characteristics')">
             Characteristics
         </button>
     </div>
@@ -54,7 +54,7 @@
 <%
 function renderUsers() {
 for (let i = 0; i < users.length; i++) {
-    const foundUser = users[i]
+    const foundUser = users.filter(i => i.id !== user.id)[i]
     if (!foundUser) return %>
 <div class="item user">
     <div class="name">

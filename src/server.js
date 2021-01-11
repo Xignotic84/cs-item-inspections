@@ -14,6 +14,7 @@ const Routers = require('./routers')
 // Handle express sessions using redis
 const session = require('express-session')
 const redis = require('redis')
+// Create redis client
 const redisClient = redis.createClient({db: 0})
 const RedisStore = require('connect-redis')(session)
 
@@ -37,10 +38,15 @@ app.use(session({
 }))
 
 
+const mail = require('./util/mailer')
+
 // Listen to port specified in env file
 app.listen(process.env.PORT, async () => {
   // Connect to database
   await _db.connect()
+  // Initiate mailing service
+  mail.init()
+
   console.log(`Listening to port:${process.env.PORT}`)
 })
 
@@ -57,6 +63,7 @@ app.use(express.static(`${process.cwd().replace(/[\\]/, '/')}/views/public/`))
 app.use(['/auth', '/authorize'], Routers.auth)
 
 app.use((req, res, next) => {
+  // Require users to be signed in to access the rest of the site.
   if (!req.session.user) return res.status(403).redirect('/auth/login')
 
   next()

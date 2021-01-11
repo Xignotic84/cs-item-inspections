@@ -1,6 +1,7 @@
 const express = require('express')
 const Router = express.Router()
 const permissionLevels = require('./../util/permissionLevels')
+const mail = require('./../util/mailer')
 
 // Listen to endpoints on this route
 Router.get('/', async (req, res, next) => {
@@ -29,17 +30,20 @@ Router.get('/', async (req, res, next) => {
 
 Router.post('/permissions/:id', async (req, res) => {
 
+    if (req.session.user.id === req.params.id) {
+        return res.status(403).json({message: "You cannot edit your own permissions"})
+    }
+
     // Edit users permissions
     req.db.update(1, {id: req.params.id}, {permissionLevel: req.body.permission}, false).then(val => {
         if (val.ok) {
+            if (!val.nModified) return res.status(403).json({message: 'Please specify a different permission level'})
             res.status(200).json({message: 'Successfully updated user'})
         } else {
             res.status(500).json({message: 'There was an issue trying to update this user, try again. '})
         }
     })
-
     // Figure out a way to clear / edit the users session with new perms
-
 })
 
 module.exports = Router

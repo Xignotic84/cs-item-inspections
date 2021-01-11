@@ -11,7 +11,7 @@ module.exports = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
-        useFindAndModify: true
+        useFindAndModify: false
       })
     } catch (err) {
       console.error(`[MONGO] Failed to connect\n${err}`)
