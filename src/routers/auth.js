@@ -100,7 +100,7 @@ Router.post('/signup', async (req, res) => {
   mail.send('signup', {
     from: 'Item Inspection Support <contact@xignotic.dev>',
     to: req.body.email, subject: 'Inspection account creation',
-    text: "We've received your sign up request, please note that it will be reviewed by a supervisor and you will be informed once your account has been approved. \n You can login using this link: https://inspection.xignotic.dev"
+    text: "We've received your sign up request, please note that it will be reviewed by a supervisor and you will be informed once your account has been approved. \nYou can login using this link: https://inspection.xignotic.dev"
   })
 
   res.header('location', '/auth/login').status(200).json({message: `Your account is pending approval, please wait until it's approved and try again.`})

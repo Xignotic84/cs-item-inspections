@@ -34,7 +34,7 @@ module.exports = {
       }
     })
   },
-  sendMail(type, {from, to, subject, text, html}) {
+  sendMail({from, to, subject, text, html}) {
     console.log({from, to, subject, text, html})
     console.log(`[MAILER] Sending email to ( ${to} )`)
     return transporter.sendMail({
@@ -45,8 +45,7 @@ module.exports = {
       html
     })
   },
-  send(data) {
-    if (emailList.filter(d => d.to.includes(data.to) && d.type.includes(type))) return
+  send(type, data) {
     emailList.push(data)
   }
 }
