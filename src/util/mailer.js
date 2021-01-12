@@ -12,15 +12,18 @@ const transporter = nodemailer.createTransport({
 
 let emailList = []
 let connected = false
+let attempt = 0
 
 module.exports = {
   init() {
     transporter.verify(async err => {
       if (err) {
+        if (attempt > 3) return console.error(`[MAILER] Connection failed, killing connection`)
+        attempt++
         if (err.errno === -4077) return console.error(`[MAILER] Killing of previous instance`)
         console.log('[MAILER] Mail failed to connect.')
         setTimeout(() => {
-          return init()
+          return this.init()
         }, 5000)
       } else {
         connected = true

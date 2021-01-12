@@ -1,4 +1,6 @@
 module.exports = {
   permissionLevels: require('./permissionLevels'),
-  password: require('./password')
+  password: require('./password'),
+  mailer: require('./mailer'),
+  itemFrequency: require('./itemFrequency')
 }

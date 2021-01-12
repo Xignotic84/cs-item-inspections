@@ -48,7 +48,7 @@ Router.post('/login', async (req, res) => {
   // Set user session
   req.session.user = Object.assign({
     loggedInAt: new Date(),
-    unix_loggedInAt: Date.now()
+    unix_loggedInAt: new Date().getTime()
   }, foundUser)
 
   res.header('location', '/').status(200).json({message: `Successfully logged in as ${foundUser.username}`})
@@ -92,7 +92,7 @@ Router.post('/signup', async (req, res) => {
     permissionLevel: 0,
     password,
     ...body,
-    unix_created_at: Date.now()
+    unix_created_at: new Date().getTime()
   })
 
 

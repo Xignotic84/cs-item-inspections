@@ -33,7 +33,7 @@ Router.post('/create', async (req, res, next) => {
         id: uniqueString(),
         creator: req.session.user.username,
         ...req.body,
-        unix_created_at: Date.now()
+        unix_created_at: new Date().getTime()
     })
 
     // Respond to request with location header and json body with message
@@ -108,10 +108,11 @@ Router.post('/:id/inspect', async (req, res) => {
         item_id: id,
         note: note || "None Provided",
         characteristic: characteristic || "None Provided",
-        unix_created_at: Date.now(),
+        lastInspected: new Date().getTime(),
+        unix_created_at: new Date().getTime(),
     })
 
-    req.db.update(2, {id: id}, {lastInspected: Date.now()})
+    req.db.update(2, {id: id}, {lastInspected: new Date().getTime()})
 
     // Respond to request with location header and json body with message
     res.header('location', `/item/${id}`).status(200).json({message: `Inspected ${item.name}`})

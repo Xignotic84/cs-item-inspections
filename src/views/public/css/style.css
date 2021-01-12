@@ -208,15 +208,19 @@ a {
     border: 0;
 }
 
-.form select {
-    display: block;
-    width: 320px;
+select {
     margin: 20px auto;
+    color: #fff;
+    border: 0;
     border-radius: 3px;
     padding: 15px;
     background: rgba(0, 0, 0, 0.2);
-    color: #fff;
-    border: 0;
+}
+
+
+.form select {
+    display: block;
+    width: 320px;
 }
 
 .login input:focus, .button:focus, .form input:focus, .form select:focus {
@@ -284,6 +288,10 @@ a {
     background: var(--lighter-bg);
     border: 4px solid var(--lighter-bg);
     border-radius: 2px;
+}
+
+.item.quiz.inspection {
+    border: 4px solid var(--light-red);
 }
 
 .item h1 {

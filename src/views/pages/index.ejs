@@ -14,7 +14,9 @@
 
 <div class="main content">
     <div class="search">
-        <input class="search-bar" type="search" id="search-input-bar" autocomplete="off"  placeholder="Search for items..." value="">
+        <label>
+            <input class="search-bar" type="search" id="search-input-bar" autocomplete="off"  placeholder="Search for items..." value="">
+        </label>
         <button id="search-button" tabindex="-1" onclick="search()">
             <i class="fas fa-search"></i>
         </button>
@@ -32,12 +34,12 @@
         const item = items[i]
         if (!item) return %>
             <a href="/item/<%=item.id%>">
-                <div class="item quiz">
+                <div class="item quiz <%=item.needsInspection ? 'inspection' : ''%>">
                     <div class="name">
                         <h3> <%=item.name%> </h3>
                     </div>
                     <div class="quiz-footer">
-
+                       <p>Inspected: <%=item.lastInspectedText || 'Never'%></p>
                     </div>
                 </div>
             </a>
