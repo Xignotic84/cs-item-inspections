@@ -82,7 +82,7 @@ module.exports = {
 
         if (cache_id) redis.del(cache_id)
 
-        return await foundColl.updateOne(id, data, {upsert: upsert})
+        return await foundColl.findOneAndUpdate(id, data, {upsert: upsert})
     },
 
     async delete(collection, id, cache_id) {
@@ -106,7 +106,7 @@ module.exports = {
 
     },
 
-    async getUser(username, email) {
-        return this.findOne(1, {$or: [{'username': username}, {'email': email}]}, {key: `user:-ID`});
+    async getUser(username) {
+        return this.findOne(1, {$or: [{'username': username}, {'email': username}]}, {key: `user:-ID`});
     }
 }

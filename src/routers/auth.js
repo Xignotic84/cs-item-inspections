@@ -96,14 +96,98 @@ Router.post('/signup', async (req, res) => {
   })
 
 
-  // Add email to queue for sending
+  // Add email to queue for sending to user
   mail.send('signup', {
-    from: 'Item Inspection Support <contact@xignotic.dev>',
+    from: 'Item Inspection Support <noreply@xignotic.dev>',
     to: req.body.email, subject: 'Inspection account creation',
     text: "We've received your sign up request, please note that it will be reviewed by a supervisor and you will be informed once your account has been approved. \nYou can login using this link: https://inspection.xignotic.dev"
   })
 
   res.header('location', '/auth/login').status(200).json({message: `Your account is pending approval, please wait until it's approved and try again.`})
 })
+
+
+Router.get('/reset', async (req, res) => {
+
+  if (req.query.token || req.session.user) {
+    const key = `reset:${req.query.token}`
+
+    // Check if user is signed in or token is valid
+    let data = req.session.user || await req.redis.get(key)
+
+    // Redirect if token is invalid
+    if (!data) return res.header('location', '/').status(200).json({message: `Invalid reset token.`})
+
+    return res.render('pages/resetpwd.ejs', {
+      pagetitle: 'Reset password',
+      user: req.session.user || false,
+      message: false
+    })
+  } else {
+    res.render('pages/reset.ejs', {pagetitle: 'Reset password', user: req.session.user || false, message: false})
+  }
+})
+
+Router.post('/reset', async (req, res) => {
+  const user = req.session.user
+  if (req.query.token || user) {
+    const key = `reset:${req.query.token}`
+    let data = user || await req.redis.get(key)
+
+    // Check if user is signed in or reset token is valid
+    if (!data) return res.header('location', '/').status(200).json({message: `Invalid reset token.`})
+
+    // Check if data type is string and parse
+    if (typeof data === 'string') data = JSON.parse(data)
+
+    const {password1, password2, oldpassword} = req.body
+
+    if (user && !oldpassword) return res.status(401).json({message: 'You need to input your current password'})
+
+    // Compare current password to new password to ensure it's different
+    if (user && !await Password.compare(oldpassword, user.password)) return res.status(401).json({message: 'Invalid current password'})
+
+    if (oldpassword === password1) return res.status(400).json({message: 'Current and new passwords cannot match'})
+
+    if (password1 !== password2) return res.status(400).json({message: 'Your new passwords need to match'})
+
+    // Hash new password for storage
+    const hashedPassword = await Password.hash(password1)
+
+    // Update password for user in database
+    req.db.update(1, {email: data.email}, {
+      password: hashedPassword
+    }, false)
+
+    return res.header('location', '/auth/logout').status(200).json({message: 'Your password has been reset'})
+  }
+
+  const email = req.body.email
+
+  if (!email) return res.status(400).json({message: 'You need to provide an email address'})
+
+  // Validate the email address
+  if (!validateEmail(email)) return res.status(400).json({message: 'You need to provide a valid email'})
+
+  // Generate token for request
+  const token = uniqueString()
+
+  // Stringify data for redis
+  const data = JSON.stringify({email: email})
+
+  // Set token expiration for 5 minutes
+  req.redis.set(`reset:${token}`, data, 'ex', 300)
+
+  // Email regeneration email to user with token
+  mail.send('regen', {
+    from: 'noreply@xignotic.dev',
+    to: req.body.email,
+    subject: 'Password reset request',
+    text: `Password reset requested for your Account \nPassword Reset link: ${req.get('host')}${req.baseUrl}/reset?token=${token}`
+  })
+
+  res.status(200).json({message: 'Successfully sent password reset request'})
+})
+
 
 module.exports = Router

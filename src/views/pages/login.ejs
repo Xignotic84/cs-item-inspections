@@ -3,6 +3,7 @@
 <html lang="en">
 
 <%- include('../partials/header.ejs') %>
+<%- include('../partials/nav.ejs') %>
 
 
 <body>
@@ -18,9 +19,11 @@
                 <label for="password">
                     <input type="password" id="password" name="password" setting="password" placeholder="Password">
                 </label>
+
                 <button class="button" id="btn">
                     Submit
                 </button>
+                <p>Forget your password? <span><a href="/auth/reset">Reset it here</a></span></p>
                 <p>Don't have an account? <span><a href="/auth/signup">Sign Up</a></span></p>
             </div>
         </div>

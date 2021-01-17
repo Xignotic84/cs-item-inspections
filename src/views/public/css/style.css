@@ -24,6 +24,7 @@ html, body {
 
 a {
     color: white;
+    text-decoration: none;
 }
 
 
@@ -759,4 +760,37 @@ select {
     .navbar:hover .logo-text {
         left: 0px;
     }
+}
+
+#nav-profile:hover {
+    cursor: pointer;
+}
+
+.prompt.account {
+    left: 0;
+    top: 30%;
+    right: 0;
+    margin: 0 auto;
+    z-index: 20;
+    background: var(--bg-black);
+    min-height: 80px;
+    display: none;
+    border-top: 5px solid var(--light-blue);
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    position: fixed;
+    width: 25%;
+    color: #fff;
+    background: var(--bg-black);
+    padding: 30px 0px;
+}
+
+.prompt.account .content {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.prompt.account .button {
+    width: 150px;
+    display: inline-block;
 }

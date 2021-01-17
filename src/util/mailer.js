@@ -30,7 +30,7 @@ module.exports = {
         console.log('[MAILER] Mail service initiated')
         setInterval(() => {
           emailList.forEach(d => {
-            this.sendMail(d)
+            this.sendMail(d.data)
           })
           emailList = []
         }, 15000)
@@ -49,7 +49,8 @@ module.exports = {
     })
   },
   send(type, data) {
-    emailList.push(data)
+    if (emailList.filter(d => d.email === data.email && d.type === type).length > 0) return
+    emailList.push({data: data, type: type})
   }
 }
 

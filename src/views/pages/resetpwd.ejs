@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/nav.ejs') %>
+
+<body>
+
+<div class="main content">
+
+    <div class="signup-container">
+        <div class="login">
+            <h1>Reset password</h1>
+
+
+            <% if (user) { %>
+            <label for="password">
+                <input type="password" id="password" name="password" setting="oldpassword" placeholder="Current password">
+            </label>
+            <% } %>
+
+            <label for="password">
+                <input type="password" id="password" name="password" setting="password1" placeholder="New password">
+            </label>
+
+            <label for="password">
+                <input type="password" id="password" name="password" setting="password2" placeholder="Repeat new password">
+            </label>
+
+            <button class="button" id="btn">
+                Submit
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

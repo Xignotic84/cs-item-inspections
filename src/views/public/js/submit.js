@@ -1,9 +1,8 @@
 window.onload = function () {
-
     Array.from(document.getElementsByTagName('button'))?.forEach(btn => {
         if (btn.getAttribute('exclude')) return
+
         btn.addEventListener('click', function () {
-            console.log(true)
             post(this.getAttribute('loc'))
         })
     })
