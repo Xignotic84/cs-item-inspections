@@ -24,7 +24,6 @@ html, body {
 
 a {
     color: white;
-    text-decoration: none;
 }
 
 
@@ -791,6 +790,7 @@ select {
 }
 
 .prompt.account .button {
+    text-decoration: none;
     width: 150px;
     display: inline-block;
 }
