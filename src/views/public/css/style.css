@@ -209,7 +209,7 @@ a {
 }
 
 select {
-    margin: 20px auto;
+    margin-top: 20px;
     color: #fff;
     border: 0;
     border-radius: 3px;

@@ -20,7 +20,10 @@ module.exports = {
       if (err) {
         if (attempt > 3) return console.error(`[MAILER] Connection failed, killing connection`)
         attempt++
-        if (err.errno === -4077) return console.error(`[MAILER] Killing of previous instance`)
+        if (err.errno === -4077) {
+          this.init()
+          return  console.error(`[MAILER] Killing of previous instance`)
+        }
         console.log('[MAILER] Mail failed to connect.')
         setTimeout(() => {
           return this.init()
@@ -38,7 +41,6 @@ module.exports = {
     })
   },
   sendMail({from, to, subject, text, html}) {
-    console.log({from, to, subject, text, html})
     console.log(`[MAILER] Sending email to ( ${to} )`)
     return transporter.sendMail({
       from: from,
@@ -50,6 +52,7 @@ module.exports = {
   },
   send(type, data) {
     if (emailList.filter(d => d.email === data.email && d.type === type).length > 0) return
+    console.log(data)
     emailList.push({data: data, type: type})
   }
 }
