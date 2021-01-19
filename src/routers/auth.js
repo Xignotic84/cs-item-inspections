@@ -74,11 +74,10 @@ Router.post('/signup', async (req, res) => {
   if (!password) return res.status(400).json({message: 'You need to provide a password'})
 
   // Request to database to see if the user exists
-  const foundUser = await req.db.getUser(username, email)
+  const foundUser = await req.db.getUser([username, email])
 
   // Check if user exists
   if (foundUser) return res.status(400).json({message: 'An account with this email or username already exists'})
-
 
   // Remove these from body object to prevent them from being stored as they are defined differently
   delete body.password
@@ -94,7 +93,6 @@ Router.post('/signup', async (req, res) => {
     ...body,
     unix_created_at: new Date().getTime()
   })
-
 
   // Add email to queue for sending to user
   mail.send('signup', {

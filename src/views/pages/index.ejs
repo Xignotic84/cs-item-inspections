@@ -13,11 +13,14 @@
 
 
 <div class="main content">
+    <a class="button" id="create"  href="/item/create">
+        Create
+    </a>
     <div class="search">
         <label>
             <input class="search-bar" type="search" id="search-input-bar" autocomplete="off"  placeholder="Search for items..." value="">
         </label>
-        <button id="search-button" tabindex="-1" onclick="search()">
+        <button class="button" exclude="true" id="search-button" tabindex="-1" onclick="search(this.value)">
             <i class="fas fa-search"></i>
         </button>
     </div>
@@ -31,8 +34,7 @@
 <%
  function renderItems() {
     for (let i = 0; i < items.length; i++) {
-        const item = items[i]
-        if (!item) return %>
+        const item = items[i] %>
             <a href="/item/<%=item.id%>">
                 <div class="item quiz <%=item.needsInspection ? 'inspection' : ''%>">
                     <div class="name">
@@ -45,3 +47,24 @@
             </a>
     <%}
  }%>
+
+<script>
+  document.onkeydown = function (event) {
+    if (event.keyCode === 13) {
+      search()
+    }
+  };
+    function search() {
+      const query = document.getElementById('search-input-bar').value
+      const elems = document.getElementsByClassName('item quiz')
+      if (!elems) return
+      for (let i = 0; i < elems.length; i++) {
+        const elem = elems[i]
+        if (elem.innerHTML.toLowerCase().includes(query.toLowerCase())) {
+          elem.style.display = 'inline-block';
+        } else {
+          elem.style.display = 'none';
+        }
+      }
+    }
+</script>
