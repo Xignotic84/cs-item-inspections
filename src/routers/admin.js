@@ -70,9 +70,9 @@ Router.post('/user/:id/delete', async (req, res) => {
 
     if (user.id !== user.id || user.permissionLevel !== 3) res.status(401).json({message: "You do not have permission to delete this account"})
 
-    await req.db.delete(1, {id: user.id}, `user:${user.id}`)
+    await req.db.delete(1, {id: req.params.id}, `user:${req.params.id.id}`)
 
-    res.status(200).redirect('/auth/logout')
+    res.header('location', '/admin').status(200).json({message: 'Successfully deleted an account'})
 })
 
 module.exports = Router
