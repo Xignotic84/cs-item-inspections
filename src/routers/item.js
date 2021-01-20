@@ -38,6 +38,8 @@ Router.post('/create', async (req, res, next) => {
 
     // Respond to request with location header and json body with message
     res.header('location', '/').status(200).json({message: `Successfully created item ${name}`})
+
+    req.db.update(1, {id: req.session.user.id}, {$inc: {'analytics.itemCount': 1}})
 })
 
 Router.get('/:id', async (req, res) => {
@@ -116,6 +118,8 @@ Router.post('/:id/inspect', async (req, res) => {
 
     // Respond to request with location header and json body with message
     res.header('location', `/item/${id}`).status(200).json({message: `Inspected ${item.name}`})
+
+    req.db.update(1, {id: req.session.user.id}, {$inc: {'analytics.inspectedCount': 1}})
 })
 
 

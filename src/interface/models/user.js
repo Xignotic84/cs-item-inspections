@@ -8,6 +8,11 @@ const userSchema = new Schema({
   username: {type: String, required: true, unique: true},
   email: {type: String, required: true, unique: true},
   password: defType,
+  analytics: {
+    itemCount: {type: Number},
+    inspectedCount: {type: Number},
+    characteristicCount: {type: Number},
+  },
   verifiedNotification: {type: Boolean, default: false},
   unix_created_at: {type: Number, required: true},
 })
