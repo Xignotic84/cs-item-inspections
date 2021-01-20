@@ -65,4 +65,14 @@ Router.post('/permissions/:id/:permission', async (req, res) => {
     // Figure out a way to clear / edit the users session with new perms
 })
 
+Router.post('/user/:id/delete', async (req, res) => {
+    const user = req.session.user
+
+    if (user.id !== user.id || user.permissionLevel !== 3) res.status(401).json({message: "You do not have permission to delete this account"})
+
+    await req.db.delete(1, {id: user.id}, `user:${user.id}`)
+
+    res.status(200).redirect('/auth/logout')
+})
+
 module.exports = Router
