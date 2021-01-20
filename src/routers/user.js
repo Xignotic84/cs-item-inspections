@@ -15,10 +15,11 @@ Router.get(['/:id', '/me'], async (req, res, next) => {
     if (typeof foundGroups === 'string') foundGroups = JSON.parse(foundGroups)
 
 
-    // Check if path is /me and if so use sesion user or get from db
+    // Check if path is /me and if so use session user or get from db
     let foundUser = (req.path === '/me' || id === user.id) ? user : await req.db.findOne(1, {id: id}, {key: `user:${id}`})
     // Render page with data
     if (typeof foundUser === 'string') foundUser = JSON.parse(foundUser)
+
     res.status(200).render('pages/user.ejs', {
         pagetitle: foundUser.username,
         user: user || false,
@@ -26,14 +27,6 @@ Router.get(['/:id', '/me'], async (req, res, next) => {
         groups: foundGroups,
         members: foundUser.groups
     })
-})
-
-Router.post('/me/delete', async (req, res) => {
-    await req.db.delete(1, {id: user.id}, `user:${req.session.user.id}`)
-
-    await req.db.delete(2, {user_id: user.id})
-
-    res.status(200).redirect('/auth/logout')
 })
 
 module.exports = Router

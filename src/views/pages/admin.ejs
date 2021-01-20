@@ -53,12 +53,35 @@
 
 <%
 function renderUsers() {
-for (let i = 0; i < users.length; i++) {
-    const foundUser = users.filter(i => i.id !== user.id)[i]
+  const Users = users.filter(i => i.id !== user.id)
+for (let i = 0; i < Users.length; i++) {
+    const foundUser = Users[i]
     if (!foundUser) return %>
 <div class="item user">
-    <div class="name">
+    <div class="details">
         <h3> <%=foundUser.username%> </h3>
+        <p> <%=foundUser.email%></p>
+    </div>
+    <div class="stats">
+        <div class="count">
+            <div class="tooltip">
+                <p><i class="fas fa-book"></i><%=foundUser.analytics?.itemCount || 0%></p>
+                <span class="tooltiptext">Items created</span>
+
+            </div>
+        </div>
+        <div class="count">
+            <div class="tooltip">
+                <p><i class="fas fa-eye"></i><%=foundUser.analytics?.inspectedCount || 0%></p>
+                <span class="tooltiptext">Items inspected</span>
+            </div>
+        </div>
+        <div class="count">
+            <div class="tooltip">
+                <p><i class="fas fa-tags"></i><%=foundUser.analytics?.characteristicCount || 0 %></p>
+                <span class="tooltiptext">Characteristics created</span>
+            </div>
+        </div>
     </div>
     <div class="select" id="perm-select">
         <label>
@@ -70,12 +93,14 @@ for (let i = 0; i < users.length; i++) {
                     %>
                             <option <%=foundUser.permissionLevel === Number(key) ? 'selected="selected"' : ''%> value="<%=key%>"><%=found%></option>
                 <%} %>
-            </select>
 
-            <button class="button <%=foundUser.id%>">
-                Update
-            </button>
+
+            </select>
         </label>
+        <div class="admin-buttons">
+            <button class="button <%=foundUser.id%>">Update</button>
+            <button class="button" id="delete" loc="/user/<%=foundUser.id%>/delete"> <i class="fas fa-trash"></i> </button>
+        </div>
     </div>
 </div>
 <%}
@@ -97,6 +122,8 @@ for (let i = 0; i < characteristics.length; i++) {
 <div class="item characteristics">
     <div class="name">
         <h3> <%=foundCharacteristic.name%> </h3>
+        <div class="content-buttons">
+        </div>
     </div>
 </div>
 <%}
