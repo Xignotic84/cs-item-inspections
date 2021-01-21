@@ -10,6 +10,9 @@ const schema = new Schema({
     location: String,
     department: String,
     frequency: Number,
+    analytics: {
+        inspectedCount: {type: Number},
+    },
     lastInspected: Number,
     unix_created_at: {type: Number, required: true},
 })

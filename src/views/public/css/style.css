@@ -298,8 +298,12 @@ option {
     -webkit-box-align: center;
     align-items: center;
     padding: 15px;
+    width: 100%;
+    max-height: 150px;
+    max-width: 450px;
+    min-width: 220px;
+    min-height: 100px;
     margin: 10px;
-    width: 20%;
     height: 155px;
     overflow: hidden;
     background: var(--lighter-bg);
@@ -777,19 +781,13 @@ option {
     display: inline-block;
 }
 
-.item.user {
-    width: 100%;
-    max-height: 150px;
-    max-width: 450px;
-    min-width: 220px;
-    min-height: 100px;
-}
 
-.item.user p {
+.item p {
     color: var(--light-gray)
 }
 
-.item.user .details {
+
+.item .details {
     width: 50%;
     height: 10px;
     float: left;
@@ -797,7 +795,20 @@ option {
     display: inline-block;
 }
 
-.item.user .stats {
+
+.item .details .description {
+    height: 100%;
+    width: 100%;
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item .stats {
+    display: inline-block;
+}
+
+.item .count i, .count p     {
     display: inline-block;
 }
 
@@ -805,10 +816,15 @@ option {
     background-color: var(--lighter-bg);
     border-radius: 4px;
     width: 34px;
-    padding: 8px 14px;
+    padding: 8px;
     display: inline-flex;
     margin-right: 10px;
 }
+
+.count.date, .count.date i  {
+    width: fit-content;
+}
+
 
 .count i {
     margin-right: 5px;
@@ -893,11 +909,17 @@ option {
         margin: 0;
     }
 
-    .item.user .count {
+
+    .item .count {
         margin-top: 40px;
     }
 
-    .item.user #perm-select {
+    #perm-select {
+        margin-top: 5px;
+    }
+
+    .item {
+        width: 90%;
         margin-top: 0px;
     }
 }

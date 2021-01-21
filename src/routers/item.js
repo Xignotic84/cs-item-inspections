@@ -114,12 +114,13 @@ Router.post('/:id/inspect', async (req, res) => {
         unix_created_at: new Date().getTime(),
     })
 
-    req.db.update(2, {id: id}, {lastInspected: new Date().getTime()})
+    req.db.update(2, {id: id}, {lastInspected: new Date().getTime(), $inc: {'analytics.inspectedCount': 1}})
 
     // Respond to request with location header and json body with message
     res.header('location', `/item/${id}`).status(200).json({message: `Inspected ${item.name}`})
 
     req.db.update(1, {id: req.session.user.id}, {$inc: {'analytics.inspectedCount': 1}})
+
 })
 
 
