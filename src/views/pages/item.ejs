@@ -43,7 +43,7 @@
             <div class="control">
                 <input class="dashboard__input override extra-short-input" id="taginput" autocomplete="off" placeholder="Characteristics">
                 <div class="" id="taglist"></div>
-                <input setting="characteristic" type="hidden" name="tags" id="tags" value="" data-default-tags="<%=characteristics%>">
+                <input setting="characteristic" type="hidden" name="tags" id="tags" value="" data-default-tags="<%=characteristics.map(c => c.name).join(', ')%>">
                 <div class="holder">
                     <div class="dashboard__suggested-tags suggestedtags" id="suggestedtags">
                     </div>

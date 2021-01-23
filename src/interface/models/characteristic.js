@@ -4,9 +4,9 @@ const defType = {type: String, required: true}
 
 const schema = new Schema({
   id: {unique: true, ...defType},
+  creator: String,
   name: String,
   description: String,
-  creator: String,
   unix_created_at: {type: Number, required: true},
 })
 

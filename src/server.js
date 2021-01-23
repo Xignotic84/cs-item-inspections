@@ -73,4 +73,5 @@ app.use('/', Routers.main)
 app.use('/user', Routers.user)
 app.use('/item', Routers.item)
 app.use('/admin', Routers.admin)
+app.use('/characteristic', Routers.characteristic)
 

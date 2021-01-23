@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/nav.ejs') %>
+
+<body>
+
+<div class="main content">
+    <div class="form-container">
+        <div class="form">
+            <h1>Characteristic Creation</h1>
+            <div class="form-values">
+                <label for="name">
+                    <input type="text" id="name" setting="name" placeholder="Name">
+                </label>
+                <label for="description">
+                    <textarea class="textBox" type="text" id="description" setting="description" placeholder="Description"></textarea>
+                </label>
+            </div>
+            <button class="button" id="btn">
+                Submit
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

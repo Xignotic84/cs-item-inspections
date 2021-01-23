@@ -3,5 +3,6 @@ module.exports = {
   main: require('./main'),
   user: require('./user'),
   item: require('./item'),
-  admin: require('./admin')
+  admin: require('./admin'),
+  characteristic: require('./characteristic')
 }
