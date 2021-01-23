@@ -46,8 +46,15 @@ Router.get('/:id', async (req, res) => {
     const id = req.params.id
 
     // Get item and inspections from db
-    const item = await req.db.findOne(2, {id: id})
-    const inspections = await req.db.find(3, {item_id: id})
+    let item = await req.redis.get(`item:${id}`) || await req.db.findOne(2, {id: id}, {key: `item:-ID`})
+    if (typeof item === 'string') item = JSON.parse(item)
+
+    let inspections = await req.redis.get(`inspections:${id}`) || await req.db.find(3, {item_id: id}, {key: `inspections:${id}`})
+    if (typeof inspections === 'string') inspections = JSON.parse(inspections)
+
+    let characteristics = await req.redis.get('characteristics') || await req.db.find(4, {}, {key: 'characteristics'})
+    if (typeof characteristics === 'string') characteristics = JSON.parse(characteristics)
+
     const guessedTz = mtz.tz.guess()
 
     inspections.forEach(d => {
@@ -68,7 +75,7 @@ Router.get('/:id', async (req, res) => {
     res.status(200).render('pages/item.ejs', {
         pagetitle: `Item | ${item.name}`,
         item: item,
-        characteristics: ['Checked the buttons', 'Checked air quality', 'Conducted maintenance'],
+        characteristics: characteristics,
         lastInspected: mtz(item.lastInspected).tz(guessedTz).calendar(),
         inspections: inspections.sort((a, b) => b.unix_created_at - a.unix_created_at),
         user: req.session.user || false,

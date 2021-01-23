@@ -173,7 +173,6 @@ a {
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
     position: absolute;
-    height: 100%;
     width: 100%;
     color: #fff;
     background: rgba(0, 0, 0, 0.13);
@@ -254,9 +253,9 @@ option {
 }
 
 #create {
-    width: 100px;
-    position: absolute;
-    right: 150px;
+    display: inline-block;
+    width: 190px;
+    margin-right: 20px;
 }
 
 #search-button {
@@ -415,10 +414,10 @@ option {
 }
 
 #inspection-form  {
-    background: var(--bg-black);
-    height: 65%;
+    height: 390px;
     display: none;
     z-index: 3;
+    background: var(--bg-black)
 }
 
 .cross {
