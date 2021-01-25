@@ -10,7 +10,7 @@ module.exports = {
     return bcrypt.hashSync(password, 10)
   },
 
-  // Compre plain and hashed password
+  // Compare plain and hashed password
   async compare(plainPassword, password) {
     if (!plainPassword || !password) throw new Error('Missing args on compare function')
     return bcrypt.compareSync(plainPassword, password)

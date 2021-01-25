@@ -12,7 +12,6 @@ module.exports = {
     async handleCache(cache, data) {
         if (!data || !cache.key || typeof data === 'string') return false
         const cached = await redis.get(cache.key)
-        console.log(cached, cache.key)
         if (cached) return false
 
         if (typeof data !== 'string' && cache.key) {

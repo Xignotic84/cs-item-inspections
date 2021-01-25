@@ -7,7 +7,10 @@ const itemFreq = require('./../util/itemFrequency')
 Router.get('/', async (req, res, next) => {
   // Check if user is signed in, if not send to login page
 
-  const items = await req.db.find(2, {})
+  // Get items from cache or from db
+  let items = await req.redis.get('items') || await req.db.find(2, {}, {key: 'items'})
+  // Check if data is from cache then parse from string.
+  if (typeof items === 'string') items = JSON.parse(items)
 
   for (let i = 0; i < items.length; i++) {
     const item = items[i]

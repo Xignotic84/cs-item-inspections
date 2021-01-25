@@ -14,10 +14,11 @@ Router.get('/create', async (req, res, next) => {
 Router.post('/create', async (req, res) => {
     const {name, description} = req.body
 
+    // Check if name exists if not respond with error
     if (!name) return res.status(400).json({message: 'You need to provide a name for the characteristic'})
-
+    // Ensure name is not greater than 20 characters
     if (name.length > 20) return res.status(400).json({message: 'You cannot provide a name longer than 20 characters'})
-
+    // Ensure that description is not longer than 300 characters
     if (description.length > 300) return res.status(400).json({message: 'You cannot provide a characteristic longer than 300 characters'})
 
     // Create new inspection in db
@@ -29,11 +30,13 @@ Router.post('/create', async (req, res) => {
         unix_created_at: new Date().getTime()
     })
 
+    // Delete characteristics from cache
     req.redis.del('characteristics')
 
     // Respond to request with location header and json body with message
     res.header('location', '/').status(200).json({message: `Created characteristic ${name}`})
 
+    // Update analytics in database
     req.db.update(1, {id: req.session.user.id}, {$inc: {'analytics.characteristicCount': 1}})
 
 })

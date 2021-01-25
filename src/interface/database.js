@@ -7,7 +7,7 @@ module.exports = {
   // Database connect function
   async connect() {
     try {
-      mongoose.connect(`mongodb://localhost/cs-inspections`, {
+      await mongoose.connect(`mongodb://localhost/cs-inspections`, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,

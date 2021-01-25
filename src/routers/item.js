@@ -25,8 +25,10 @@ Router.get('/create', async (req, res, next) => {
 Router.post('/create', async (req, res, next) => {
     const {name, location} = req.body
 
+    // Check if name was provided in body
     if (!name) return res.status(400).json({message: 'You need to provide an item name'})
 
+    // Check if location was provided with body
     if (!location) return res.status(400).json({message: 'You need to provide the location of the item'})
 
     req.db.create(2, {
@@ -39,20 +41,26 @@ Router.post('/create', async (req, res, next) => {
     // Respond to request with location header and json body with message
     res.header('location', '/').status(200).json({message: `Successfully created item ${name}`})
 
+    // Update analytics in database
     req.db.update(1, {id: req.session.user.id}, {$inc: {'analytics.itemCount': 1}})
 })
 
 Router.get('/:id', async (req, res) => {
     const id = req.params.id
 
-    // Get item and inspections from db
+    // Get item and inspections from cache or db
     let item = await req.redis.get(`item:${id}`) || await req.db.findOne(2, {id: id}, {key: `item:-ID`})
+    // Check if item is from cache and parse from string
     if (typeof item === 'string') item = JSON.parse(item)
 
+    // Get item and inspections from cache or db
     let inspections = await req.redis.get(`inspections:${id}`) || await req.db.find(3, {item_id: id}, {key: `inspections:${id}`})
+    // Check if item is from cache and parse from string
     if (typeof inspections === 'string') inspections = JSON.parse(inspections)
 
+    // Get item and inspections from cache or db
     let characteristics = await req.redis.get('characteristics') || await req.db.find(4, {}, {key: 'characteristics'})
+    // Check if item is from cache and parse from string
     if (typeof characteristics === 'string') characteristics = JSON.parse(characteristics)
 
     const guessedTz = mtz.tz.guess()
