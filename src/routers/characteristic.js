@@ -29,6 +29,8 @@ Router.post('/create', async (req, res) => {
         unix_created_at: new Date().getTime()
     })
 
+    req.redis.del('characteristics')
+
     // Respond to request with location header and json body with message
     res.header('location', '/').status(200).json({message: `Created characteristic ${name}`})
 

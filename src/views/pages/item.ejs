@@ -41,15 +41,21 @@
                 <textarea class="textBox" type="text" id="note" setting="note" placeholder="Note"></textarea>
             </label>
             <div class="control">
-                <input class="dashboard__input override extra-short-input" id="taginput" autocomplete="off" placeholder="Characteristics">
-                <div class="" id="taglist"></div>
-                <input setting="characteristic" type="hidden" name="tags" id="tags" value="" data-default-tags="<%=characteristics.map(c => c.name).join(', ')%>">
-                <div class="holder">
-                    <div class="dashboard__suggested-tags suggestedtags" id="suggestedtags">
+                <%
+                if (characteristics?.length > 0) {%>
+                    <input class="dashboard__input override extra-short-input" id="taginput" autocomplete="off" placeholder="Characteristics">
+                    <div class="" id="taglist"></div>
+                    <input setting="characteristic" type="hidden" name="tags" id="tags" value="" data-default-tags="<%=characteristics.map(c => c.name)%>">
+                    <div class="holder">
+                        <div class="dashboard__suggested-tags suggestedtags" id="suggestedtags">
+                        </div>
                     </div>
-                </div>
+                <%} else {%>
+                    <div class="characteristic">
+                        <p> There are currently no characteristics </p>
+                    </div>
+                <%} %>
             </div>
-
         </div>
         <button class="button" id="btn" loc="/inspect">
             Submit
@@ -64,7 +70,6 @@
         else elem.style.display = 'block'
     }
 </script>
-
 
 <%
 function renderInspections() {
