@@ -11,16 +11,17 @@
     </div>
 </div>
 
-
 <div class="main content">
     <div class="search">
-        <label>
-            <input class="search-bar" type="search" id="search-input-bar" autocomplete="off"
-                   placeholder="Search for items..." value="">
-        </label>
-        <button class="button" exclude="true" id="search-button" tabindex="-1" onclick="search(this.value)">
-            <i class="fas fa-search"></i>
-        </button>
+        <form onsubmit="return false">
+            <label for="search">
+                <input class="search-bar" type="search" id="search-input-bar" autocomplete="off"
+                       placeholder="Search for items..." value="">
+            </label>
+            <button class="button" exclude="true" id="search-button" tabindex="-1" onclick="search(this.value)">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
         <div class="index-buttons">
             <a class="button" id="create" href="/item/create">
                 Create Item
@@ -44,7 +45,7 @@ for (let i = 0; i < items.length; i++) {
 <a href="/item/<%= item.id %>">
     <div class="item quiz <%= item.needsInspection ? 'inspection' : '' %>">
         <div class="details">
-            <h3> <%= item.name %> </h3>
+            <h2> <%= item.name %> </h2>
             <div class="description">
                 <p> <%= item.description || "None provided" %> </p>
             </div>

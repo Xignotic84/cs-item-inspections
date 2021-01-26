@@ -692,6 +692,12 @@ option {
     overflow: hidden;
 }
 
+.navbar img {
+    width: 2rem;
+    min-width: 2rem;
+    margin: 0 1.5rem;
+}
+
 .navbar:hover {
     background-color: var(--bg-black);
     transition: width 0.8s ease;

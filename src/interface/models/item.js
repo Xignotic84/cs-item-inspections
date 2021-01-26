@@ -8,7 +8,6 @@ const schema = new Schema({
     creator: defType,
     description: String,
     location: String,
-    department: String,
     frequency: Number,
     analytics: {
         inspectedCount: {type: Number},
