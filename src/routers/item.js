@@ -38,6 +38,8 @@ Router.post('/create', async (req, res, next) => {
         unix_created_at: new Date().getTime()
     })
 
+    req.redis.del('items')
+
     // Respond to request with location header and json body with message
     res.header('location', '/').status(200).json({message: `Successfully created item ${name}`})
 
@@ -106,8 +108,11 @@ Router.post('/:id/delete', async (req, res) => {
 Router.post('/:id/inspect', async (req, res) => {
     const id = req.params.id
 
-    // Check if item exists
-    const item = await req.db.findOne(2, {id: id})
+    // Find item exists either in cache then db
+    let item = await req.redis.get(`item:${id}`) || await req.db.findOne(2, {id: id})
+    if (typeof item === "string") item = JSON.parse(item)
+
+
     if (!item) res.status(404).json({message: 'No item was found with this ID'})
 
     const {note, characteristic} = req.body
@@ -116,7 +121,7 @@ Router.post('/:id/inspect', async (req, res) => {
 
     if (note.length > 300) return res.status(400).json({message: 'You cannot provide a note longer than 300 characters'})
 
-    if (characteristic.length > 300) return res.status(400).json({message: 'You cannot provide a characteristic longer than 300 characters'})
+    if (characteristic?.length > 300) return res.status(400).json({message: 'You cannot provide a characteristic longer than 300 characters'})
 
     // Create new inspection in db
     req.db.create(3, {
@@ -129,13 +134,17 @@ Router.post('/:id/inspect', async (req, res) => {
         unix_created_at: new Date().getTime(),
     })
 
+    // Update analytics for this item
     req.db.update(2, {id: id}, {lastInspected: new Date().getTime(), $inc: {'analytics.inspectedCount': 1}})
+
+    // Clear cached inspections for this item
+    await req.redis.del(`inspections:${id}`)
 
     // Respond to request with location header and json body with message
     res.header('location', `/item/${id}`).status(200).json({message: `Inspected ${item.name}`})
 
+    // Update user analytics
     req.db.update(1, {id: req.session.user.id}, {$inc: {'analytics.inspectedCount': 1}})
-
 })
 
 
@@ -144,7 +153,6 @@ Router.post('/:_id/inspect/:id/delete', async (req, res) => {
 
     // Delete item from db
     await req.db.delete(3, {id: id})
-
 
     // Respond to request with location header and json body with message
     res.header('location', `/item/${_id}`).status(200).json({message: `Deleted inspection`})
