@@ -8,24 +8,24 @@
 <body>
 <div class="page-header-container">
     <div class="page-header">
-        <h1> <%=item.name%> </h1>
+        <h1> <%= item.name %> </h1>
         <p> Last inspected </p>
-        <p> <%=lastInspected %></p>
+        <p> <%= lastInspected %></p>
     </div>
 </div>
 
 
 <div class="item-buttons">
-    <div class="button" onclick="toggleInspection()"> Inspect </div>
-    <button class="button" id="delete" loc="/delete"> Delete </button>
+    <div class="button" onclick="toggleInspection()"> Inspect</div>
+    <button class="button" id="delete" loc="/delete"> Delete</button>
 </div>
 
 <div class="main content">
     <div class="item-description">
-        <%=item.description%>
+        <%= item.description %>
     </div>
     <ul class="accordian-list">
-        <%renderInspections()%>
+        <% renderInspections() %>
     </ul>
 </div>
 </body>
@@ -42,19 +42,21 @@
             </label>
             <div class="control">
                 <%
-                if (characteristics?.length > 0) {%>
-                    <input class="dashboard__input override extra-short-input" id="taginput" autocomplete="off" placeholder="Characteristics">
-                    <div class="" id="taglist"></div>
-                    <input setting="characteristic" type="hidden" name="tags" id="tags" value="" data-default-tags="<%=characteristics.map(c => c.name)%>">
-                    <div class="holder">
-                        <div class="dashboard__suggested-tags suggestedtags" id="suggestedtags">
-                        </div>
+                if (characteristics?.length > 0) { %>
+                <input class="dashboard__input override extra-short-input" id="taginput" autocomplete="off"
+                       placeholder="Characteristics">
+                <div class="" id="taglist"></div>
+                <input setting="characteristic" type="hidden" name="tags" id="tags" value=""
+                       data-default-tags="<%= characteristics.map(c => c.name) %>">
+                <div class="holder">
+                    <div class="dashboard__suggested-tags suggestedtags" id="suggestedtags">
                     </div>
-                <%} else {%>
+                </div>
+                <% } else { %>
                     <div class="characteristic">
                         <p> There are currently no characteristics </p>
                     </div>
-                <%} %>
+                <% } %>
             </div>
         </div>
         <button class="button" id="btn" loc="/inspect">
@@ -79,35 +81,37 @@ for (let i = 0; i < inspections.length; i++) {
 <li class="accordian-item">
     <input type="checkbox" class="accordian-checkbox" checked>
     <h2 class="accordian-title">  <%= foundItem.inspected %></h2>
-    <p class="inspector"> Inspected by: <%=foundItem.creator%> </p>
+    <p class="inspector"> Inspected by: <%= foundItem.creator %> </p>
     <div class="content">
         <div class="content-item">
             <p>Notes</p>
             <label for="note">
-                <textarea readonly class="textBox" id="note" setting="note" placeholder="<%=foundItem.note%>"></textarea>
+                <textarea readonly class="textBox" id="note" setting="note"
+                          placeholder="<%= foundItem.note %>"></textarea>
             </label>
         </div>
 
         <div class="content-item">
             <p>Characteristics</p>
             <div class="characteristics">
-                <%foundItem.characteristic.split(',').forEach(d => {%>
-                <div class="characteristic">
-                    <%=d%>
-                </div>
                 <%
-                }) %>
-
+                const chars = foundItem.characteristic.split(',')
+                for (let i = 0; i < chars.length; i++) {
+                    const d = chars[i] %>
+                    <div class="characteristic">
+                        <%= d %>
+                    </div>
+                <% } %>
             </div>
-
         </div>
         <div class="content-buttons">
-            <button class="button" id="delete" loc="/inspect/<%=foundItem.id%>/delete"> <i class="fas fa-trash"></i> </button>
+            <button class="button" id="delete" loc="/inspect/<%= foundItem.id %>/delete"><i class="fas fa-trash"></i>
+            </button>
         </div>
     </div>
 </li>
-<%}
-}%>
+<% }
+} %>
 
 <script>
     let taginput = document.getElementById('taginput');
@@ -120,7 +124,7 @@ for (let i = 0; i < inspections.length; i++) {
         .defaultTags
         .split(',');
 
-    taginput.addEventListener('keydown', function(e) {
+    taginput.addEventListener('keydown', function (e) {
         if (e.keyCode == 188 || e.keyCode == 13) {
             e.preventDefault();
             createTag();
@@ -134,41 +138,41 @@ for (let i = 0; i < inspections.length; i++) {
         }
     });
 
-    taginput.addEventListener('keyup', function(e) {
+    taginput.addEventListener('keyup', function (e) {
         filterSuggestions();
     });
 
     var timeout;
 
-    taginput.addEventListener('focus', function(e) {
+    taginput.addEventListener('focus', function (e) {
         suggestedtags.style.display = 'block';
         clearTimeout(timeout);
-        setTimeout(function() {
+        setTimeout(function () {
             suggestedtags.classList.add('open');
         }, 25);
 
         filterSuggestions();
     });
 
-    taginput.addEventListener('focusout', function(e) {
+    taginput.addEventListener('focusout', function (e) {
         suggestedtags.classList.remove('open');
-        timeout = setTimeout(function() {
+        timeout = setTimeout(function () {
             suggestedtags.style.display = 'none';
         }, 250);
     });
 
-    taglist.addEventListener('click', function(e) {
+    taglist.addEventListener('click', function (e) {
         taginput.focus();
     });
 
     function createTag(value) {
         var tag = value ? value : taginput.value;
-        var isValid = validTags.some(function(t) {
+        var isValid = validTags.some(function (t) {
             return t.toLowerCase() == tag.toLowerCase();
         });
         var currentTags = buildInput()
             .split(',');
-        var exists = currentTags.some(function(t) {
+        var exists = currentTags.some(function (t) {
             return t.toLowerCase() == tag.toLowerCase();
         });
         if (!tag || !isValid || exists) return;
@@ -185,11 +189,11 @@ for (let i = 0; i < inspections.length; i++) {
         var input = taginput.value;
         var currentTags = buildInput()
             .split(',');
-        var suggestions = validTags.filter(function(t) {
+        var suggestions = validTags.filter(function (t) {
             return t.toLowerCase()
                 .startsWith(input.toLowerCase()) && !currentTags.includes(t);
         });
-        suggestions = suggestions.map(function(s) {
+        suggestions = suggestions.map(function (s) {
             return '<p onclick="createTag(this.innerText)">' + s + '</p>';
         })
             .join('\n');

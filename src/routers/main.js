@@ -12,6 +12,11 @@ Router.get('/', async (req, res, next) => {
   // Check if data is from cache then parse from string.
   if (typeof items === 'string') items = JSON.parse(items)
 
+  // Get characteristics from cache or db
+  let characteristics = await req.redis.get('characteristics') || await req.db.find(4, {}, {key: 'characteristics'})
+  // Check if characteristics is from cache and parse from string
+  if (typeof characteristics === 'string') characteristics = JSON.parse(characteristics)
+
   for (let i = 0; i < items.length; i++) {
     const item = items[i]
 
@@ -28,6 +33,7 @@ Router.get('/', async (req, res, next) => {
   res.render('pages/index.ejs', {
     pagetitle: 'Home',
     items: items || [],
+    characteristics : characteristics || [],
     user: req.session.user || false,
   })
 

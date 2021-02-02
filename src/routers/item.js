@@ -60,9 +60,9 @@ Router.get('/:id', async (req, res) => {
     // Check if item is from cache and parse from string
     if (typeof inspections === 'string') inspections = JSON.parse(inspections)
 
-    // Get item and inspections from cache or db
+    // Get characteristics from cache or db
     let characteristics = await req.redis.get('characteristics') || await req.db.find(4, {}, {key: 'characteristics'})
-    // Check if item is from cache and parse from string
+    // Check if characteristics is from cache and parse from string
     if (typeof characteristics === 'string') characteristics = JSON.parse(characteristics)
 
     const guessedTz = mtz.tz.guess()
@@ -101,8 +101,15 @@ Router.post('/:id/delete', async (req, res) => {
     // Delete inspections from db
     await req.db.deleteMany(3, {item_id: id})
 
+
+    await req.redis.del('items')
+
     // Respond to request with location header and json body with message
     res.header('location', '/').status(200).json({message: `Deleted item`})
+
+    await req.redis.del(`item:${id}`)
+
+    await req.redis.del(`inspections:${id}`)
 })
 
 Router.post('/:id/inspect', async (req, res) => {

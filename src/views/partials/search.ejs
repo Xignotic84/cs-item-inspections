@@ -1,0 +1,35 @@
+<div class="search">
+    <form onsubmit="return false">
+        <label for="search">
+            <input class="search-bar" type="search" id="search-input-bar" autocomplete="off"
+                   placeholder="Search for items..." value="">
+        </label>
+        <button class="button" exclude="true" id="search-button" tabindex="-1" onclick="search(this.value)">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+</div>
+
+<script>
+    document.onkeydown = function (event) {
+        if (event.keyCode === 13) {
+            search()
+        }
+    };
+
+    function search() {
+        const query = document.getElementById('search-input-bar').value
+        const parentElems = document.getElementsByClassName('item ')
+        const elems = document.getElementsByClassName('details')
+        if (!elems) return
+        for (let i = 0; i < elems.length; i++) {
+            const elem = elems[i]
+            const parentElem = parentElems[i]
+            if (elem.innerHTML.toLowerCase().includes(query.toLowerCase())) {
+                parentElem.style.display = 'inline-block';
+            } else {
+                parentElem.style.display = 'none';
+            }
+        }
+    }
+</script>

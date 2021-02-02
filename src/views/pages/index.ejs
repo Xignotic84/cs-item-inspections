@@ -12,84 +12,74 @@
 </div>
 
 <div class="main content">
-    <div class="search">
-        <form onsubmit="return false">
-            <label for="search">
-                <input class="search-bar" type="search" id="search-input-bar" autocomplete="off"
-                       placeholder="Search for items..." value="">
-            </label>
-            <button class="button" exclude="true" id="search-button" tabindex="-1" onclick="search(this.value)">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
-        <div class="index-buttons">
-            <a class="button" id="create" href="/item/create">
-                Create Item
-            </a>
-            <a class="button" id="create" href="/characteristic/create">
-                Create Characteristic
-            </a>
-        </div>
+    <%- include('../partials/search.ejs') %>
+    <div class="index-buttons">
+        <a class="button" id="create" href="/item/create">
+            Create Item
+        </a>
+        <a class="button" id="create" href="/characteristic/create">
+            Create Characteristic
+        </a>
     </div>
     <div class="row items">
-        <% renderItems() %>
+        <div class="row header">
+            <h1> Items </h1>
+        </div>
+        <% renderEntities(1) %>
+    </div>
+    <div class="row characteristics">
+        <div class="row header">
+            <h1> Characteristics</h1>
+        </div>
+        <% if (!characteristics[0]) {%>
+            <div class="count">
+                <p> We couldn't find any characteristics</p>
+            </div>
+        <%} %>
+        <% renderEntities(2) %>
     </div>
 </div>
 </body>
 </html>
 
 <%
-function renderItems() {
-for (let i = 0; i < items.length; i++) {
-    const item = items[i] %>
-<a href="/item/<%= item.id %>">
-    <div class="item quiz <%= item.needsInspection ? 'inspection' : '' %>">
-        <div class="details">
-            <h2> <%= item.name %> </h2>
-            <div class="description">
-                <p> <%= item.description || "None provided" %> </p>
-            </div>
-        </div>
-        <div class="stats">
-            <div class="count">
-                <div class="tooltip">
-                    <p><i class="fas fa-eye"></i><%= item.analytics?.inspectedCount || 0 %></p>
-                    <span class="tooltiptext">Items inspections</span>
+function renderEntities(type = 1) {
+    const entityType = type === 1 ? items : characteristics
+for (let i = 0; i < entityType.length; i++) {
+    const entity = entityType[i] %>
+        <a <%=type === 1 ? `href=/item/${entity.id}` :' '%>>
+            <div class="item <%= entity.needsInspection ? 'inspection' : '' %>">
+                <div class="details">
+                    <h2> <%= entity.name %> </h2>
+                    <div class="description">
+                        <p> <%= entity.description || "None provided" %> </p>
+                    </div>
                 </div>
-            </div>
-            <div class="count date">
-                <div class="tooltip">
-                    <p><i class="fas fa-eye"></i>
-                    <p><%= item.lastInspectedText || 'Never' %></p>
-                    <span class="tooltiptext">Last inspected</span>
+                <%
+                    if (type === 1) { %>
+                        <div class="stats">
+                            <div class="count">
+                                <div class="tooltip">
+                                    <p><i class="fas fa-eye"></i><%= entity.analytics?.inspectedCount || 0 %></p>
+                                    <span class="tooltiptext"><%=entity.name%> inspections</span>
+                                </div>
+                            </div>
+                            <div class="count date">
+                                <div class="tooltip">
+                                    <p><i class="fas fa-eye"></i>
+                                    <p><%= entity.lastInspectedText || 'Never' %></p>
+                                    <span class="tooltiptext">Last inspected</span>
+                                </div>
+                            </div>
+                        </div>
+                    <% }
+                %>
+                <% if (type !== 1) {%>
+                <div class="characteristic-buttons">
+                    <button class="button" id="delete" loc="characteristic/<%=entity.id%>/delete"> <i class="fas fa-trash"></i> </button>
                 </div>
+               <%}%>
             </div>
-        </div>
-    </div>
-</a>
+        </a>
 <% }
 } %>
-
-<script>
-    document.onkeydown = function (event) {
-        if (event.keyCode === 13) {
-            search()
-        }
-    };
-
-    function search() {
-        const query = document.getElementById('search-input-bar').value
-        const parentElems = document.getElementsByClassName('item quiz')
-        const elems = document.getElementsByClassName('details')
-        if (!elems) return
-        for (let i = 0; i < elems.length; i++) {
-            const elem = elems[i]
-            const parentElem = parentElems[i]
-            if (elem.innerHTML.toLowerCase().includes(query.toLowerCase())) {
-                parentElem.style.display = 'inline-block';
-            } else {
-                parentElem.style.display = 'none';
-            }
-        }
-    }
-</script>

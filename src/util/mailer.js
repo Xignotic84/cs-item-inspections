@@ -52,7 +52,6 @@ module.exports = {
   },
   send(type, data) {
     if (emailList.filter(d => d.email === data.email && d.type === type).length > 0) return
-    console.log(data)
     emailList.push({data: data, type: type})
   }
 }

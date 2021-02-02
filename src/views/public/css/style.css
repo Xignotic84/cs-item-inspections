@@ -291,6 +291,10 @@ option {
     text-align: center;
 }
 
+.row.header {
+    margin-bottom: 10px;
+}
+
 .item {
     user-select: none;
     display: inline-block;
@@ -311,7 +315,7 @@ option {
     border-radius: 2px;
 }
 
-.item.quiz.inspection {
+.item.inspection {
     border: 4px solid var(--light-red);
 }
 
@@ -580,6 +584,10 @@ option {
     width: 10%;
 }
 
+.index-buttons {
+    text-align: center;
+}
+
 .content-buttons button {
     z-index: 2;
     font-size: 18px;
@@ -601,6 +609,13 @@ option {
 .characteristics {
     height: 100%;
 }
+
+.characteristic-buttons {
+    float: right;
+    font-size: 18px;
+    width: 80px;
+}
+
 .characteristic, .atag, #tags:default  {
     margin-right: 5px;
     margin-left: 5px;
@@ -813,14 +828,14 @@ option {
     display: inline-block;
 }
 
-.item .count i, .count p     {
+.item .count i, .count p {
     display: inline-block;
 }
 
 .count {
     background-color: var(--lighter-bg);
     border-radius: 4px;
-    width: 34px;
+    min-width: 34px;
     padding: 8px;
     display: inline-flex;
     margin-right: 10px;
@@ -829,7 +844,6 @@ option {
 .count.date, .count.date i  {
     width: fit-content;
 }
-
 
 .count i {
     margin-right: 5px;
@@ -913,8 +927,7 @@ option {
     main {
         margin: 0;
     }
-
-
+    
     .item .count {
         margin-top: 40px;
     }

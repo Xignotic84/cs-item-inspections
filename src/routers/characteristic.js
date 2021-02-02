@@ -46,13 +46,12 @@ Router.post('/:id/delete', async (req, res) => {
     const id = req.params.id
 
     // Delete item from db
-    await req.db.delete(2, {id: id})
+    await req.db.delete(4, {id: id})
 
-    // Delete inspections from db
-    await req.db.deleteMany(3, {item_id: id})
+    await req.redis.del('characteristics')
 
     // Respond to request with location header and json body with message
-    res.header('location', '/').status(200).json({message: `Deleted item`})
+    res.header('location', '/').status(200).json({message: `Deleted characteristic`})
 })
 
 module.exports = Router
