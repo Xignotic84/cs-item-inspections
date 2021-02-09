@@ -36,7 +36,7 @@ module.exports = {
             this.sendMail(d.data)
           })
           emailList = []
-        }, 15000)
+        }, 5000)
       }
     })
   },
