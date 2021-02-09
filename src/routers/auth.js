@@ -138,6 +138,9 @@ Router.post('/reset', async (req, res) => {
     // Check if data type is string and parse
     if (typeof data === 'string') data = JSON.parse(data)
 
+    // Check if user is from admin account to prevent changing of this specific password
+    if (data.email === 'admin@gmail.com') return res.status(401).json({message: "You cannot change this accounts password"})
+
     const {password1, password2, oldpassword} = req.body
 
     if (user && !oldpassword) return res.status(401).json({message: 'You need to input your current password'})
@@ -145,8 +148,10 @@ Router.post('/reset', async (req, res) => {
     // Compare current password to new password to ensure it's different
     if (user && !await Password.compare(oldpassword, user.password)) return res.status(401).json({message: 'Invalid current password'})
 
+    // Check if old password and new password match
     if (oldpassword === password1) return res.status(400).json({message: 'Current and new passwords cannot match'})
 
+    // Check if both passwords don't match
     if (password1 !== password2) return res.status(400).json({message: 'Your new passwords need to match'})
 
     // Hash new password for storage
@@ -156,6 +161,10 @@ Router.post('/reset', async (req, res) => {
     req.db.update(1, {email: data.email}, {
       password: hashedPassword
     }, false)
+
+
+    // Delete token to prevent further resets
+    await req.redis.del(key)
 
     return res.header('location', '/auth/logout').status(200).json({message: 'Your password has been reset'})
   }
