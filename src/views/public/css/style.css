@@ -815,6 +815,13 @@ option {
     display: inline-block;
 }
 
+.item.user .details p {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 
 .item .details .description {
     height: 100%;
