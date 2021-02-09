@@ -57,7 +57,7 @@ for (let i = 0; i < Users.length; i++) {
     </div>
     <div class="select" id="perm-select">
         <label>
-            <select setting="permission" excluse="true" onclick="tada(this, `<%=foundUser.id%>`)">
+            <select id="permission-setting" setting="permission" exclude="true" onchange="tada(this, `<%=foundUser.id%>`)">
                     <%
                         for (let i = 0; i < Object.values(permissions).length; i++) {
                             const found = permissions[i]
@@ -68,8 +68,8 @@ for (let i = 0; i < Users.length; i++) {
             </select>
         </label>
         <div class="admin-buttons">
-            <button class="button <%=foundUser.id%>" exclude="true">Update</button>
-            <button class="button" id="delete" exclude="true" loc="/user/<%=foundUser.id%>/delete"> <i class="fas fa-trash"></i> </button>
+            <button class="button <%=foundUser.id%>">Update</button>
+            <button class="button" id="delete" loc="/user/<%=foundUser.id%>/delete"> <i class="fas fa-trash"></i> </button>
         </div>
     </div>
 </div>
@@ -78,9 +78,9 @@ for (let i = 0; i < Users.length; i++) {
 
 <script>
     function tada(obj, user) {
-      const string = `/permissions/${user}/${obj.value}`
-      const elem = document.getElementsByClassName(`button ${user}`)[0]
-      elem.setAttribute('loc', string)
+        const string = `/permissions/${user}/${obj.value}`
+        const elem = document.getElementsByClassName(`button ${user}`)[0]
+        elem.setAttribute('loc', string)
     }
 </script>
 
