@@ -161,6 +161,8 @@ Router.post('/:_id/inspect/:id/delete', async (req, res) => {
     // Delete item from db
     await req.db.delete(3, {id: id})
 
+    await req.redis.del(`inspections:${_id}`)
+
     // Respond to request with location header and json body with message
     res.header('location', `/item/${_id}`).status(200).json({message: `Deleted inspection`})
 })
