@@ -78,38 +78,38 @@ function renderInspections() {
 for (let i = 0; i < inspections.length; i++) {
     const foundItem = inspections[i]
     if (!foundItem) return %>
-<li class="accordian-item">
-    <input type="checkbox" class="accordian-checkbox" checked>
-    <h2 class="accordian-title">  <%= foundItem.inspected %></h2>
-    <p class="inspector"> Inspected by: <%= foundItem.creator %> </p>
-    <div class="content">
-        <div class="content-item">
-            <p>Notes</p>
-            <label for="note">
-                <textarea readonly class="textBox" id="note" setting="note"
-                          placeholder="<%= foundItem.note %>"></textarea>
-            </label>
-        </div>
+    <li class="accordian-item">
+        <input type="checkbox" class="accordian-checkbox" checked>
+        <h2 class="accordian-title">  <%= foundItem.inspected %></h2>
+        <p class="inspector"> Inspected by: <%= foundItem.creator %> </p>
+        <div class="content">
+            <div class="content-item">
+                <p>Notes</p>
+                <label for="note">
+                    <textarea readonly class="textBox" id="note" setting="note"
+                              placeholder="<%= foundItem.note %>"></textarea>
+                </label>
+            </div>
 
-        <div class="content-item">
-            <p>Characteristics</p>
-            <div class="characteristics">
-                <%
-                const chars = foundItem.characteristic.split(',')
-                for (let p = 0; p < chars.length; p++) {
-                    const d = chars[p] %>
-                    <div class="characteristic">
-                        <%= d %>
-                    </div>
-                <% } %>
+            <div class="content-item">
+                <p>Characteristics</p>
+                <div class="characteristics">
+                    <%
+                    const chars = foundItem.characteristic.split(',')
+                    for (let p = 0; p < chars.length; p++) {
+                        const d = chars[p] %>
+                        <div class="characteristic">
+                            <%= d %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="content-buttons">
+                <button class="button" id="delete" loc="/inspect/<%= foundItem.id %>/delete"><i class="fas fa-trash"></i>
+                </button>
             </div>
         </div>
-        <div class="content-buttons">
-            <button class="button" id="delete" loc="/inspect/<%= foundItem.id %>/delete"><i class="fas fa-trash"></i>
-            </button>
-        </div>
-    </div>
-</li>
+    </li>
 <% }
 } %>
 
