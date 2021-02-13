@@ -1,21 +1,21 @@
 {
-  "name": "cs-quiz",
+  "name": "cs-inspection",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Xignotic84/cs-quiz.git"
+    "url": "git+https://github.com/Xignotic84/cs-item-inspections.git"
   },
   "author": "Franz Herrmann",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Xignotic84/cs-quiz/issues"
+    "url": "https://github.com/Xignotic84/cs-item-inspections/issues"
   },
-  "homepage": "https://github.com/Xignotic84/cs-quiz#readme",
+  "homepage": "https://github.com/Xignotic84/cs-item-inspections#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
