@@ -25,6 +25,11 @@
         <div class="row header">
             <h1> Items </h1>
         </div>
+        <% if (!items[0]) {%>
+            <div class="count">
+                <p> We couldn't find any Items</p>
+            </div>
+        <%} %>
         <% renderEntities(1) %>
     </div>
     <div class="row characteristics">
@@ -75,9 +80,13 @@ for (let i = 0; i < entityType.length; i++) {
                     <% }
                 %>
                 <% if (type !== 1) {%>
-                <div class="characteristic-buttons">
-                    <button class="button" id="delete" loc="characteristic/<%=entity.id%>/delete"> <i class="fas fa-trash"></i> </button>
-                </div>
+                    <div class="characteristic-buttons">
+                        <button class="button" id="delete" loc="characteristic/<%=entity.id%>/delete"> <i class="fas fa-trash"></i> </button>
+                    </div>
+               <%} else { %>
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i><%=entity.location%>
+                    </div>
                <%}%>
             </div>
         </a>

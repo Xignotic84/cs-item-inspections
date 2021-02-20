@@ -56,24 +56,27 @@ Router.post('/login', async (req, res) => {
 
 Router.post('/signup', async (req, res) => {
   const body = req.body
+  // Check if body exists
   if (!body) return res.status(400).json({code: 400, message: 'No body provided'}).redirect('/')
 
   let {email, username, password} = body
 
-  // Check if teacher checkbox is set to true
+  // Check if email is provided
   if (!email) return res.status(400).json({message: 'You need to provide an email'})
 
   // Run validate email to ensure email is an actual email
   if (!validateEmail(email)) return res.status(400).json({message: 'You need to provide a valid email'})
 
+  // Check if a username was provided
   if (!username) return res.status(400).json({message: 'You need to provide an username'})
 
   // Make sure that the username only includes non special characters
   if (!username.match(/^[a-z0-9-.]+$/gi)) return res.status(400).json({message: 'Only letters (az), numbers (0-9) and decimal points (.) are accepted.'})
 
+  // Check if a password was provided
   if (!password) return res.status(400).json({message: 'You need to provide a password'})
 
-  // Request to database to see if the user exists
+  // Get user from database
   const foundUser = await req.db.getUser([username, email])
 
   // Check if user exists
@@ -94,13 +97,14 @@ Router.post('/signup', async (req, res) => {
     unix_created_at: new Date().getTime()
   })
 
-  // Add email to queue for sending to user
+  // Queue and send signup success email
   mail.send('signup', {
     from: 'Item Inspection Support <noreply@xignotic.dev>',
     to: req.body.email, subject: 'Inspection account creation',
     text: "We've received your sign up request, please note that it will be reviewed by a supervisor and you will be informed once your account has been approved. \nYou can login using this link: https://inspection.xignotic.dev"
   })
 
+  // Redirect to login page with message
   res.header('location', '/auth/login').status(200).json({message: `Your account is pending approval, please wait until it's approved and try again.`})
 })
 
