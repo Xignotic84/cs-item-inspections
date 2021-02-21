@@ -75,11 +75,14 @@
 
 <%
 function renderInspections() {
+// For loop to loop through inspections
 for (let i = 0; i < inspections.length; i++) {
+    // Declare a variable for the found inspection
     const foundItem = inspections[i]
     if (!foundItem) return %>
     <li class="accordian-item">
         <input type="checkbox" class="accordian-checkbox" checked>
+        <!-- Render found item data -->
         <h2 class="accordian-title">  <%= foundItem.inspected %></h2>
         <p class="inspector"> Inspected by: <%= foundItem.creator %> </p>
         <div class="content">
@@ -90,15 +93,18 @@ for (let i = 0; i < inspections.length; i++) {
                               placeholder="<%= foundItem.note %>"></textarea>
                 </label>
             </div>
-
             <div class="content-item">
                 <p>Characteristics</p>
                 <div class="characteristics">
                     <%
+                    // Split the string of rendered characteristics and put them into an array
                     const chars = foundItem.characteristic.split(',')
+                    // Loop through the array
                     for (let p = 0; p < chars.length; p++) {
+                        // Define found chars to d
                         const d = chars[p] %>
                         <div class="characteristic">
+                            <!-- Render found characteristic -->
                             <%= d %>
                         </div>
                     <% } %>

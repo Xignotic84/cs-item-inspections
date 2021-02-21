@@ -32,10 +32,13 @@ module.exports = {
     }) {
         let data
 
+        // Get selected schema from provided collection enum.
         const foundColl = models[collections[collection]] || models[collection]
 
+        // Check if a collection/schema is found
         if (!foundColl) throw new Error('Invalid collection passed with function findOne()')
 
+        // Check if cache key and cache bypass isn't set to true then attempt to grab from cache or database. If cache key doesn't exist or bypass is set to true it will attempt to only get from the database.
         data = cache.key && !cache.bypass && await redis.get(cache.key) || await foundColl.findOne(id).lean()
 
         // Check if data hasn't been cached, this will only be on the initial fetch from the database and then set it into cache
@@ -44,6 +47,7 @@ module.exports = {
         // Parse from cache (String to JSON)
         if (typeof data === 'string') data = JSON.parse(data)
 
+        // Return data or false
         return data || false
     },
 

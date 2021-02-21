@@ -38,7 +38,6 @@ Router.post('/create', async (req, res) => {
 
     // Update analytics in database
     req.db.update(1, {id: req.session.user.id}, {$inc: {'analytics.characteristicCount': 1}})
-
 })
 
 
