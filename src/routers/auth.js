@@ -191,7 +191,7 @@ Router.post('/reset', async (req, res) => {
 
   // Email regeneration email to user with token
   mail.send('regen', {
-    from: 'noreply@xignotic.dev',
+    from: 'Item Inspection Support <noreply@xignotic.dev>',
     to: req.body.email,
     subject: 'Password reset request',
     text: `Password reset requested for your Account \nPassword Reset link: ${req.get('host')}${req.baseUrl}/reset?token=${token}`
