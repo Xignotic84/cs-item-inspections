@@ -132,8 +132,10 @@ Router.get('/reset', async (req, res) => {
 
 Router.post('/reset', async (req, res) => {
   const user = req.session.user
+  // Check if an email has been provided and if a token has been regenerated or the user is logged in.
   if (req.query.token || user) {
     const key = `reset:${req.query.token}`
+    // Get data from cache or from user
     let data = user || await req.redis.get(key)
 
     // Check if user is signed in or reset token is valid
@@ -147,6 +149,7 @@ Router.post('/reset', async (req, res) => {
 
     const {password1, password2, oldpassword} = req.body
 
+    // Check if they've provided their current password, only applies if the user is logged in.
     if (user && !oldpassword) return res.status(401).json({message: 'You need to input your current password'})
 
     // Compare current password to new password to ensure it's different

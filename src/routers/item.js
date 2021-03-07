@@ -101,14 +101,16 @@ Router.post('/:id/delete', async (req, res) => {
     // Delete inspections from db
     await req.db.deleteMany(3, {item_id: id})
 
-
+    // Delete items cache
     await req.redis.del('items')
 
     // Respond to request with location header and json body with message
     res.header('location', '/').status(200).json({message: `Deleted item`})
 
+    // Delete cached item
     await req.redis.del(`item:${id}`)
 
+    // Delete cached inspections for the deleted item
     await req.redis.del(`inspections:${id}`)
 })
 

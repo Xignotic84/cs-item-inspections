@@ -30,9 +30,8 @@ Router.get('/', async (req, res, next) => {
 
 Router.post('/permissions/:id/:permission', async (req, res) => {
     const id = req.params.id
-    if (req.session.user.id === req.params.id) {
-        return res.status(403).json({message: "You cannot edit your own permissions"})
-    }
+    // Check if user is attempting to edit their own permission level
+    if (req.session.user.id === req.params.id) return res.status(403).json({message: "You cannot edit your own permissions"})
 
     // Check if it is a number or not
     if (isNaN(req.params.permission)) return res.status(400).json({message: 'Invalid permission level, please refresh'})
@@ -40,20 +39,25 @@ Router.post('/permissions/:id/:permission', async (req, res) => {
     // Convert from string to number
     const permission = Number(req.params.permission)
 
-
+    // Try to get user from cache and then database.
     let user = await req.redis.get(`user:${id}`) || await req.db.findOne(1, {id: id })
 
+    // If from cache parse it from string
     if (typeof user === 'string') user = JSON.parse(user)
 
+    // Admin check to prevent permission editing of administrator account
     if (user.username === 'admin') return res.status(401).json({message: "You cannot edit the administrator's permissions"})
 
+    // Check if permission level is the same as previous permission level for user
     if (user.permissionLevel === permission) return res.status(400).json({message: 'Please specify a different permission level'})
 
     // Edit users permissions
     const data = await req.db.update(1, {id: id}, {permissionLevel: permission, verifiedNotification: true}, false)
 
+    // Provide message and 200 status.
     res.status(200).header('location', '/admin').json({message: 'Successfully updated user'})
 
+    // Check if permiossion level of user was unverified (0) and if there was no previous verified notification had been sent.
     if (data.permissionLevel === 0 && permission > 0 && !data.verifiedNotification) {
         mail.send('verified', {
             from: 'Item Inspection Support <noreply@xignotic.dev>',
@@ -61,8 +65,6 @@ Router.post('/permissions/:id/:permission', async (req, res) => {
             text: "Your account has been verified \nYou can now login using this link: https://inspection.xignotic.dev"
         })
     }
-
-    // Figure out a way to clear / edit the users session with new perms
 })
 
 Router.post('/user/:id/delete', async (req, res) => {
